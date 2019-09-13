@@ -6,7 +6,7 @@
 
 
     <artifactId>wicket-spring-data-jpa</artifactId>
-    <packaging>jar</packaging>
+    <packaging>jar></packaging>
     <parent>
         <groupId>com.bochkov</groupId>
         <artifactId>wicket-utils</artifactId>
