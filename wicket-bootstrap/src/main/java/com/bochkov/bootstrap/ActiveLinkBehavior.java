@@ -9,6 +9,16 @@ import org.danekja.java.util.function.serializable.SerializableFunction;
 import java.util.Set;
 
 public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
+
+    public static ActiveLinkBehavior<BookmarkablePageLink> forBookmarkable() {
+        return new ActiveLinkBehavior<BookmarkablePageLink>() {
+            @Override
+            public boolean isActive(BookmarkablePageLink link) {
+                return link.getPageClass().isAssignableFrom(link.getPage().getPageClass());
+            }
+        };
+    }
+
     public static ActiveLinkBehavior<BookmarkablePageLink> of(BookmarkablePageLink link) {
         return new ActiveLinkBehavior<BookmarkablePageLink>() {
             @Override
@@ -18,7 +28,16 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
         };
     }
 
+
     public static <C extends Component> ActiveLinkBehavior<C> of(C component, final SerializableFunction<C, Boolean> predicate) {
+        return new ActiveLinkBehavior<C>() {
+            public boolean isActive(C component) {
+                return predicate.apply(component);
+            }
+        };
+    }
+
+    public static <C extends Component> ActiveLinkBehavior<C> of(final SerializableFunction<C, Boolean> predicate) {
         return new ActiveLinkBehavior<C>() {
             public boolean isActive(C component) {
                 return predicate.apply(component);
