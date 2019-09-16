@@ -7,12 +7,11 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.export.IData
 import org.apache.wicket.extensions.markup.html.repeater.data.table.export.IExportableColumn;
 import org.apache.wicket.markup.html.link.ResourceLink;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.IComponentAssignedModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.ResourceStreamResource;
 import org.apache.wicket.util.resource.AbstractResourceStreamWriter;
 import org.apache.wicket.util.resource.IResourceStream;
+import org.apache.wicket.util.time.Duration;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,6 +32,12 @@ public class XLSXDataExportLink extends ResourceLink<Void> {
             @Override
             protected IResourceStream getResourceStream(Attributes attributes) {
                 return new ExportToolbar.DataExportResourceStreamWriter(exporter, table);
+            }
+
+            @Override
+            protected void configureCache(ResourceResponse data, Attributes attributes) {
+                data.setCacheDuration(Duration.NONE);
+                super.configureCache(data, attributes);
             }
         }.setFileName(fileName + "." + exporter.getFileNameExtension()));
 
