@@ -8,9 +8,24 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+/**
+ * The type Persistable model.
+ *
+ * @param <T>  the type parameter
+ * @param <ID> the type parameter
+ */
 public abstract class PersistableModel<T extends Persistable<ID>, ID extends Serializable> extends WriteLoadableModel<T, ID> {
 
 
+    /**
+     * Of persistable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param entityLoader the entity loader
+     * @param ifNullGet    the if null get
+     * @return the persistable model
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(SerializableFunction<ID, Optional<T>> entityLoader, SerializableSupplier<T> ifNullGet) {
         PersistableModel<T, ID> model = new PersistableModel<T, ID>() {
             @Override
@@ -26,16 +41,42 @@ public abstract class PersistableModel<T extends Persistable<ID>, ID extends Ser
         return model;
     }
 
+    /**
+     * Of persistable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param entityLoader the entity loader
+     * @return the persistable model
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(SerializableFunction<ID, Optional<T>> entityLoader) {
         return of(entityLoader, (SerializableSupplier<T>) null);
     }
 
+    /**
+     * Of persistable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param id           the id
+     * @param entityLoader the entity loader
+     * @return the persistable model
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(ID id, SerializableFunction<ID, Optional<T>> entityLoader) {
         PersistableModel<T, ID> model = of(entityLoader);
         model.setId(id);
         return model;
     }
 
+    /**
+     * Of persistable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param entity       the entity
+     * @param entityLoader the entity loader
+     * @return the persistable model
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(T entity, SerializableFunction<ID, Optional<T>> entityLoader) {
         PersistableModel<T, ID> model = of(entityLoader);
         model.setObject(entity);

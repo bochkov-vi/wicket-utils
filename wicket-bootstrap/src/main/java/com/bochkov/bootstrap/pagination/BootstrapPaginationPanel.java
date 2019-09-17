@@ -18,10 +18,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * The type Bootstrap pagination panel.
+ */
 public class BootstrapPaginationPanel extends Panel {
+    /**
+     * The Table.
+     */
     DataTable table;
+    /**
+     * The Page links count.
+     */
     int pageLinksCount = 5;
 
+    /**
+     * Instantiates a new Bootstrap pagination panel.
+     *
+     * @param id    the id
+     * @param table the table
+     */
     public BootstrapPaginationPanel(String id, DataTable table) {
         super(id);
         this.table = table;
@@ -78,6 +93,13 @@ public class BootstrapPaginationPanel extends Panel {
         });
     }
 
+    /**
+     * Create page item component.
+     *
+     * @param id   the id
+     * @param page the page
+     * @return the component
+     */
     public Component createPageItem(String id, IModel<Long> page) {
         GenericWebMarkupContainer<Long> item = new GenericWebMarkupContainer<Long>(id, page) {
             boolean isActive() {
@@ -110,6 +132,13 @@ public class BootstrapPaginationPanel extends Panel {
         return item;
     }
 
+    /**
+     * Create page link abstract link.
+     *
+     * @param id   the id
+     * @param page the page
+     * @return the abstract link
+     */
     public AbstractLink createPageLink(String id, IModel<Long> page) {
         Link<Long> link = new Link<Long>(id, page) {
             @Override

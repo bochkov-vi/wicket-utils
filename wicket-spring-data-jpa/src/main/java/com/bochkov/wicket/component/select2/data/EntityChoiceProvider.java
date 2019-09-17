@@ -15,12 +15,30 @@ import org.springframework.data.jpa.domain.Specification;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * The type Entity choice provider.
+ *
+ * @param <T>  the type parameter
+ * @param <ID> the type parameter
+ */
 @Getter
 @Setter
 @Accessors(chain = true)
 @AllArgsConstructor
 public abstract class EntityChoiceProvider<T extends Persistable<ID>, ID extends Serializable> extends MaskableChoiceProvider<T, ID> {
 
+    /**
+     * Of entity choice provider.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param idConverter  the id converter
+     * @param entityLoader the entity loader
+     * @param pageLoader   the page loader
+     * @param renderer     the renderer
+     * @param properties   the properties
+     * @return the entity choice provider
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> EntityChoiceProvider<T, ID> of(
             SerializableFunction<String, ID> idConverter,
             SerializableFunction<ID, Optional<T>> entityLoader,
@@ -57,6 +75,17 @@ public abstract class EntityChoiceProvider<T extends Persistable<ID>, ID extends
         return provider;
     }
 
+    /**
+     * Of entity choice provider.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param idConverter  the id converter
+     * @param entityLoader the entity loader
+     * @param pageLoader   the page loader
+     * @param properties   the properties
+     * @return the entity choice provider
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> EntityChoiceProvider<T, ID> of(
             SerializableFunction<String, ID> idConverter,
             SerializableFunction<ID, Optional<T>> entityLoader,

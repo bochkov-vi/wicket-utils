@@ -13,8 +13,26 @@ import org.wicketstuff.select2.Select2MultiChoice;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * The type Select 2 choice persistable.
+ *
+ * @param <T>  the type parameter
+ * @param <ID> the type parameter
+ */
 public class Select2ChoicePersistable<T extends Persistable<ID>, ID extends Serializable> {
 
+    /**
+     * Simple select 2 choice.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param id           the id
+     * @param idConverter  the id converter
+     * @param entityLoader the entity loader
+     * @param pageLoader   the page loader
+     * @param properties   the properties
+     * @return the select 2 choice
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> Select2Choice<T> simple(
             String id,
             SerializableFunction<String, ID> idConverter,
@@ -27,6 +45,18 @@ public class Select2ChoicePersistable<T extends Persistable<ID>, ID extends Seri
         return select2;
     }
 
+    /**
+     * Multi select 2 multi choice.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param id           the id
+     * @param idConverter  the id converter
+     * @param entityLoader the entity loader
+     * @param pageLoader   the page loader
+     * @param properties   the properties
+     * @return the select 2 multi choice
+     */
     public static <T extends Persistable<ID>, ID extends Serializable> Select2MultiChoice<T> multi(
             String id,
             SerializableFunction<String, ID> idConverter,

@@ -10,9 +10,17 @@ import org.wicketstuff.select2.ApplicationSettings;
 
 import java.util.List;
 
+/**
+ * The type Select 2 application extension.
+ */
 /*@ApplicationInitExtension*/
 public class Select2ApplicationExtension /*implements WicketApplicationInitConfiguration */{
 
+    /**
+     * Init.
+     *
+     * @param webApplication the web application
+     */
     /*@Override*/
     public void init(WebApplication webApplication) {
         ApplicationSettings.get().setJavaScriptReference(new WebjarsJavaScriptResourceReference("resources/webjars/select2/current/js/select2.full.js"));

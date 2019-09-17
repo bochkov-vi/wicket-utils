@@ -10,10 +10,26 @@ import org.apache.wicket.model.LoadableDetachableModel;
 
 import java.util.Arrays;
 
+/**
+ * The type Button rows per page.
+ */
 public class ButtonRowsPerPage extends Panel {
+    /**
+     * The Rows perpage.
+     */
     Long[] rowsPerpage;
+    /**
+     * The Table.
+     */
     DataTable table;
 
+    /**
+     * Instantiates a new Button rows per page.
+     *
+     * @param id          the id
+     * @param table       the table
+     * @param rowsPerPage the rows per page
+     */
     public ButtonRowsPerPage(String id, DataTable table, Long... rowsPerPage) {
         super(id);
         this.table = table;

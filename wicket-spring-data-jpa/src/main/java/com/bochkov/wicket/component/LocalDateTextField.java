@@ -16,16 +16,35 @@ import org.wicketstuff.select2.json.Json;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The type Local date text field.
+ */
 @Getter
 @Accessors(chain = true)
 public class LocalDateTextField extends org.apache.wicket.extensions.markup.html.form.datetime.LocalDateTextField {
 
+    /**
+     * The Options.
+     */
     Options options = new Options().setLanguage("ru").setPattern("dd.mm.yyyy");
 
+    /**
+     * Instantiates a new Local date text field.
+     *
+     * @param id      the id
+     * @param pattern the pattern
+     */
     public LocalDateTextField(String id, String pattern) {
         super(id, pattern);
     }
 
+    /**
+     * Instantiates a new Local date text field.
+     *
+     * @param id      the id
+     * @param model   the model
+     * @param pattern the pattern
+     */
     public LocalDateTextField(String id, IModel<LocalDate> model, String pattern) {
         super(id, model, pattern);
     }
@@ -55,19 +74,37 @@ public class LocalDateTextField extends org.apache.wicket.extensions.markup.html
     }
 
 
+    /**
+     * The type Options.
+     */
     @Getter
     @Setter
     @Accessors(chain = true)
     static class Options implements IClusterable {
 
+        /**
+         * The Language.
+         */
         String language;
 
+        /**
+         * The Pattern.
+         */
         String pattern;
 
+        /**
+         * The Clear btn.
+         */
         Boolean clearBtn = true;
 
+        /**
+         * The Today btn.
+         */
         Boolean todayBtn = true;
 
+        /**
+         * The Today highlight.
+         */
         Boolean todayHighlight = true;
 
         @Override

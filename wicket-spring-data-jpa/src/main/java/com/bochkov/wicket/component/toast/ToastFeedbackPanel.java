@@ -60,19 +60,27 @@ public class ToastFeedbackPanel extends Panel implements IFeedback {
      */
     private final MessageListView messageListView;
 
+    /**
+     * The Delay.
+     */
     Long delay = 1000l;
 
     /**
-     * @see Component#Component(String)
+     * Instantiates a new Toast feedback panel.
+     *
+     * @param id the id
+     * @see Component#Component(String) Component#Component(String)
      */
     public ToastFeedbackPanel(final String id) {
         this(id, null);
     }
 
     /**
-     * @param id
-     * @param filter
-     * @see Component#Component(String)
+     * Instantiates a new Toast feedback panel.
+     *
+     * @param id     the id
+     * @param filter the filter
+     * @see Component#Component(String) Component#Component(String)
      */
     public ToastFeedbackPanel(final String id, IFeedbackMessageFilter filter) {
         super(id);
@@ -135,6 +143,8 @@ public class ToastFeedbackPanel extends Panel implements IFeedback {
     }
 
     /**
+     * Gets feedback messages model.
+     *
      * @return Model for feedback messages on which you can install filters and other properties
      */
     public final FeedbackMessagesModel getFeedbackMessagesModel() {
@@ -142,6 +152,8 @@ public class ToastFeedbackPanel extends Panel implements IFeedback {
     }
 
     /**
+     * Gets filter.
+     *
      * @return The current message filter
      */
     public final IFeedbackMessageFilter getFilter() {
@@ -160,6 +172,8 @@ public class ToastFeedbackPanel extends Panel implements IFeedback {
     }
 
     /**
+     * Gets sorting comparator.
+     *
      * @return The current sorting comparator
      */
     public final Comparator<FeedbackMessage> getSortingComparator() {
@@ -186,8 +200,9 @@ public class ToastFeedbackPanel extends Panel implements IFeedback {
     }
 
     /**
-     * @param maxMessages The maximum number of feedback messages that this feedback panel should show at
-     *                    one time
+     * Sets max messages.
+     *
+     * @param maxMessages The maximum number of feedback messages that this feedback panel should show at                    one time
      * @return FeedbackPanel this.
      */
     public final ToastFeedbackPanel setMaxMessages(int maxMessages) {
@@ -199,8 +214,7 @@ public class ToastFeedbackPanel extends Panel implements IFeedback {
      * Gets the css class for the given message.
      *
      * @param message the message
-     * @return the css class; by default, this returns feedbackPanel + the message level, eg
-     * 'feedbackPanelERROR', but you can override this method to provide your own
+     * @return the css class; by default, this returns feedbackPanel + the message level, eg 'feedbackPanelERROR', but you can override this method to provide your own
      */
     protected String getCSSClass(final FeedbackMessage message) {
         String cssClass;
@@ -295,7 +309,10 @@ public class ToastFeedbackPanel extends Panel implements IFeedback {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see Component#Component(String)
+         * Instantiates a new Message list view.
+         *
+         * @param id the id
+         * @see Component#Component(String) Component#Component(String)
          */
         public MessageListView(final String id) {
             super(id);
