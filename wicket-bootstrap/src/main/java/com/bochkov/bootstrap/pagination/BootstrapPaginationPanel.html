@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+    <style>
+        .fa{
+            line-height: inherit !important;
+        }
+    </style>
+    <div class="row">
+        <ul class="pagination">
+            <li wicket:id="first" class="page-item">
+                <a wicket:id="link" class="page-link" href="#">
+                    <i class="fa fa-fast-backward"/>
+                    <span>&nbsp;</span>
+                </a>
+            </li>
+            <li wicket:id="prev" class="page-item">
+                <a wicket:id="link" class="page-link " href="#"  >
+                    <i class="fa fa-backward"/>
+                </a>
+            </li>
+            <li wicket:id="link-index" class="page-item"><a wicket:id="link" class="page-link" href="#">[page
+                number]</a></li>
+            <li wicket:id="next" class="page-item">
+                <a wicket:id="link" class="page-link" href="#">
+                    <i class="fa fa-forward"/>
+                    <span>&nbsp;</span>
+                </a>
+            </li>
+            <li wicket:id="last" class="page-item">
+                <a wicket:id="link" class="page-link" href="#">
+                    <i class="fa fa-fast-forward"/>
+                </a>
+            </li>
+        </ul>
+        <ul wicket:id="rows-per-page" class="pagination">
+
+        </ul>
+    </div>
+</wicket:panel>
+</body>
+</html>
