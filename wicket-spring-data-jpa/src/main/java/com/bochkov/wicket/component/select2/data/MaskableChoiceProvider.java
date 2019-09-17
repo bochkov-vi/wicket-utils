@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Accessors(chain = true)
-public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID extends Serializable> extends ChoiceProvider<T> implements Maskable {
+public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID extends Serializable> extends PageableChoiceProvider<T> implements Maskable {
 
     @Getter
     @Setter
@@ -62,9 +62,7 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
     }
 
 
-    public int getPageSize() {
-        return 10;
-    }
+
 
     public Iterable<String> getMaskedProperties() {
         return maskedProperties;
