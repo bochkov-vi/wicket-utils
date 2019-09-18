@@ -27,6 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Xlsx data exporter.
+ */
 @Accessors(chain = true)
 public class XLSXDataExporter extends AbstractDataExporter {
 
@@ -34,6 +37,9 @@ public class XLSXDataExporter extends AbstractDataExporter {
     @Setter
     private boolean exportHeadersEnabled = true;
 
+    /**
+     * Instantiates a new Xlsx data exporter.
+     */
     public XLSXDataExporter() {
         this(Model.of("XLSX"));
     }
@@ -42,8 +48,6 @@ public class XLSXDataExporter extends AbstractDataExporter {
      * Creates a new instance with the data format name model, content type and file name extensions provided.
      *
      * @param dataFormatNameModel The model of the exported data format name.
-     * @param contentType         The MIME content type of the exported data type.
-     * @param fileNameExtension
      */
 
 
@@ -91,6 +95,13 @@ public class XLSXDataExporter extends AbstractDataExporter {
         }
     }
 
+    /**
+     * Wrap model model.
+     *
+     * @param <T>   the type parameter
+     * @param model the model
+     * @return the model
+     */
     protected <T> IModel<T> wrapModel(IModel<T> model) {
         return model;
     }
@@ -171,6 +182,11 @@ public class XLSXDataExporter extends AbstractDataExporter {
         }
     }
 
+    /**
+     * Gets converter locator.
+     *
+     * @return the converter locator
+     */
     protected IConverterLocator getConverterLocator() {
         return Application.get().getConverterLocator();
     }

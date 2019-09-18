@@ -9,14 +9,27 @@ import org.wicketstuff.select2.JQuery;
 import org.wicketstuff.select2.Select2ResourcesBehavior;
 import org.wicketstuff.select2.Settings;
 
+/**
+ * The type Select 2 drop down behavior.
+ */
 public class Select2DropDownBehavior extends Behavior {
 
     private Settings settings = new Settings();
 
+    /**
+     * For single choice select 2 drop down behavior.
+     *
+     * @return the select 2 drop down behavior
+     */
     public static Select2DropDownBehavior forSingleChoice() {
         return new Select2DropDownBehavior();
     }
 
+    /**
+     * For multi choice select 2 drop down behavior.
+     *
+     * @return the select 2 drop down behavior
+     */
     public static Select2DropDownBehavior forMultiChoice() {
         Select2DropDownBehavior select2Behavior = new Select2DropDownBehavior();
         select2Behavior.getSettings().setMultiple(true);
@@ -52,10 +65,20 @@ public class Select2DropDownBehavior extends Behavior {
         component.setOutputMarkupId(true);
     }
 
+    /**
+     * Gets settings.
+     *
+     * @return the settings
+     */
     public Settings getSettings() {
         return settings;
     }
 
+    /**
+     * Sets settings.
+     *
+     * @param settings the settings
+     */
     public void setSettings(Settings settings) {
         this.settings = settings;
     }

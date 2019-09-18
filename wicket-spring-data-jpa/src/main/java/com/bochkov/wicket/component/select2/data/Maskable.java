@@ -7,14 +7,34 @@ import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The interface Maskable.
+ */
 public interface Maskable {
 
 
+    /**
+     * String mask expression predicate.
+     *
+     * @param mask           the mask
+     * @param maskedProperty the masked property
+     * @param query          the query
+     * @param cb             the cb
+     * @return the predicate
+     */
     static Predicate stringMaskExpression(String mask, Expression maskedProperty, CriteriaQuery<?> query, CriteriaBuilder cb) {
         mask = Optional.ofNullable(mask).orElse("%");
         return cb.like(cb.lower(maskedProperty.as(String.class)), Optional.of(mask).map(String::trim).map(String::toLowerCase).map(s -> "%" + s + "%").orElse(null));
     }
 
+    /**
+     * Mask specification specification.
+     *
+     * @param <T>               the type parameter
+     * @param mask              the mask
+     * @param maskedPopertyName the masked poperty name
+     * @return the specification
+     */
     static public <T> Specification<T> maskSpecification(final String mask, final String maskedPopertyName) {
         return (root, query, cb) -> {
             Predicate result;
@@ -35,6 +55,14 @@ public interface Maskable {
         };
     }
 
+    /**
+     * Fetch nested path path.
+     *
+     * @param <T>       the type parameter
+     * @param root      the root
+     * @param fieldname the fieldname
+     * @return the path
+     */
     public static <T> Path<T> fetchNestedPath(Path<T> root, String fieldname) {
         String[] fields = fieldname.split("\\.");
         Path<T> result = null;
@@ -48,6 +76,14 @@ public interface Maskable {
         return result;
     }
 
+    /**
+     * Mask specification specification.
+     *
+     * @param <T>             the type parameter
+     * @param mask            the mask
+     * @param maskedPoperties the masked poperties
+     * @return the specification
+     */
     static <T> Specification<T> maskSpecification(final String mask, final Iterable<String> maskedPoperties) {
         Specification<T> where = null;
         for (String p : maskedPoperties) {

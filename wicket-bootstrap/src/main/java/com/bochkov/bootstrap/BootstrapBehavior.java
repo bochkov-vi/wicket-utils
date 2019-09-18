@@ -13,6 +13,9 @@ import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 
 import java.util.List;
 
+/**
+ * The type Bootstrap behavior.
+ */
 public class BootstrapBehavior extends Behavior {
     @Override
     public void bind(Component component) {

@@ -16,8 +16,17 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Optional;
 
+/**
+ * The type Persistable data provider.
+ *
+ * @param <T>  the type parameter
+ * @param <ID> the type parameter
+ */
 public abstract class PersistableDataProvider<T extends Persistable<ID>, ID extends Serializable> extends SortableDataProvider<T, String> {
 
+    /**
+     * The Size.
+     */
     transient Long size = null;
 
 
@@ -36,10 +45,22 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
         return size;
     }
 
+    /**
+     * Gets sort.
+     *
+     * @param sortState the sort state
+     * @return the sort
+     */
     protected Sort getSort(SingleSortState<String> sortState) {
         return Optional.of(sortState).map(st -> st.getSort()).map(s -> new Sort(s.isAscending() ? Sort.Direction.ASC : Sort.Direction.DESC, s.getProperty())).orElse(Sort.unsorted());
     }
 
+    /**
+     * Convert sort . order.
+     *
+     * @param sortParam the sort param
+     * @return the sort . order
+     */
     protected Sort.Order convert(SortParam<String> sortParam) {
         return new Sort.Order(sortParam.isAscending() ? Sort.Direction.ASC : Sort.Direction.DESC, sortParam.getProperty());
     }
@@ -54,8 +75,19 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
         size = null;
     }
 
+    /**
+     * Gets repository.
+     *
+     * @param <R> the type parameter
+     * @return the repository
+     */
     public abstract <R extends JpaSpecificationExecutor<T> & CrudRepository<T, ID>> R getRepository();
 
+    /**
+     * Create specification specification.
+     *
+     * @return the specification
+     */
     public Specification<T> createSpecification() {
         return null;
     }

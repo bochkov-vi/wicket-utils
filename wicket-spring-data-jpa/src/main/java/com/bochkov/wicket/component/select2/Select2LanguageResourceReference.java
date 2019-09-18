@@ -18,6 +18,8 @@ class Select2LanguageResourceReference extends WebjarsJavaScriptResourceReferenc
     private static final String defaultLanguage = "en";
 
     /**
+     * Instantiates a new Select 2 language resource reference.
+     *
      * @param language i18n file to load (e.g. "en", "de", "fr" ...)
      */
     Select2LanguageResourceReference(String language) {

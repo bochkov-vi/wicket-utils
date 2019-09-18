@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
-import org.wicketstuff.select2.ChoiceProvider;
 import org.wicketstuff.select2.Response;
 
 import java.io.Serializable;
@@ -18,9 +17,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The type Maskable choice provider.
+ *
+ * @param <T>  the type parameter
+ * @param <ID> the type parameter
+ */
 @Accessors(chain = true)
 public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID extends Serializable> extends PageableChoiceProvider<T> implements Maskable {
 
+    /**
+     * The Masked properties.
+     */
     @Getter
     @Setter
     Iterable<String> maskedProperties;
@@ -50,6 +58,13 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
         return findAll(Optional.ofNullable(maskedSpecification).map(m -> m.and(excludeSpecification())).orElse(null), pageRequest);
     }
 
+    /**
+     * Find all page.
+     *
+     * @param specification the specification
+     * @param pageRequest   the page request
+     * @return the page
+     */
     protected abstract Page<T> findAll(Specification<T> specification, Pageable pageRequest);
 
     @Override
@@ -62,23 +77,48 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
     }
 
 
-
-
+    /**
+     * Gets masked properties.
+     *
+     * @return the masked properties
+     */
     public Iterable<String> getMaskedProperties() {
         return maskedProperties;
     }
 
+    /**
+     * Sets masked properties.
+     *
+     * @param maskedProperties the masked properties
+     * @return the masked properties
+     */
     public MaskableChoiceProvider<T, ID> setMaskedProperties(Iterable<String> maskedProperties) {
         this.maskedProperties = maskedProperties;
         return this;
     }
 
+    /**
+     * To id id.
+     *
+     * @param str the str
+     * @return the id
+     */
     public abstract ID toId(String str);
 
+    /**
+     * Excludes list.
+     *
+     * @return the list
+     */
     public List<T> excludes() {
         return null;
     }
 
+    /**
+     * Exclude specification specification.
+     *
+     * @return the specification
+     */
     protected Specification<T> excludeSpecification() {
         List<T> excludes = excludes();
         if (excludes != null) {
@@ -87,6 +127,12 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
         return null;
     }
 
+    /**
+     * Find by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     */
     public abstract Optional<? extends T> findById(ID id);
 
 }

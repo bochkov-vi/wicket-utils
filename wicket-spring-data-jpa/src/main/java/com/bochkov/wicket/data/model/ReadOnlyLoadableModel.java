@@ -9,12 +9,27 @@ import org.danekja.java.util.function.serializable.SerializableSupplier;
 
 import java.util.Optional;
 
+/**
+ * The type Read only loadable model.
+ *
+ * @param <T>  the type parameter
+ * @param <ID> the type parameter
+ */
 @Getter
 @Setter
 @Accessors(chain = true)
 public abstract class ReadOnlyLoadableModel<T, ID> extends LoadableDetachableModel<T> {
 
 
+    /**
+     * Of read only loadable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param idSupplier   the id supplier
+     * @param entityLoader the entity loader
+     * @return the read only loadable model
+     */
     public static <T, ID> ReadOnlyLoadableModel<T, ID> of(SerializableSupplier<ID> idSupplier, SerializableFunction<ID, Optional<T>> entityLoader) {
         return new ReadOnlyLoadableModel<T, ID>() {
 
@@ -44,9 +59,25 @@ public abstract class ReadOnlyLoadableModel<T, ID> extends LoadableDetachableMod
         super.setObject(object);
     }
 
+    /**
+     * Find by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     */
     public abstract Optional<T> findById(ID id);
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public abstract ID getId();
 
+    /**
+     * If null get t.
+     *
+     * @return the t
+     */
     public abstract T ifNullGet();
 }

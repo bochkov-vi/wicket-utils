@@ -5,10 +5,28 @@ import org.danekja.java.util.function.serializable.SerializableFunction;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * The type Write loadable model.
+ *
+ * @param <T>  the type parameter
+ * @param <ID> the type parameter
+ */
 public abstract class WriteLoadableModel<T, ID extends Serializable> extends ReadOnlyLoadableModel<T, ID> {
 
+    /**
+     * The Id.
+     */
     ID id;
 
+    /**
+     * Of write loadable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param idExtractor  the id extractor
+     * @param entityLoader the entity loader
+     * @return the write loadable model
+     */
     public static <T, ID extends Serializable> WriteLoadableModel<T, ID> of(SerializableFunction<T, ID> idExtractor, SerializableFunction<ID, Optional<T>> entityLoader) {
         return new WriteLoadableModel<T, ID>() {
             @Override
@@ -28,12 +46,32 @@ public abstract class WriteLoadableModel<T, ID extends Serializable> extends Rea
         };
     }
 
+    /**
+     * Of write loadable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param id           the id
+     * @param idExtractor  the id extractor
+     * @param entityLoader the entity loader
+     * @return the write loadable model
+     */
     public static <T, ID extends Serializable> WriteLoadableModel<T, ID> of(ID id, SerializableFunction<T, ID> idExtractor, SerializableFunction<ID, Optional<T>> entityLoader) {
         WriteLoadableModel<T, ID> model = of(idExtractor, entityLoader);
         model.setId(id);
         return model;
     }
 
+    /**
+     * Of write loadable model.
+     *
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param entity       the entity
+     * @param idExtractor  the id extractor
+     * @param entityLoader the entity loader
+     * @return the write loadable model
+     */
     public static <T, ID extends Serializable> WriteLoadableModel<T, ID> of(T entity, SerializableFunction<T, ID> idExtractor, SerializableFunction<ID, Optional<T>> entityLoader) {
         WriteLoadableModel<T, ID> model = of(idExtractor, entityLoader);
         model.setObject(entity);
@@ -50,6 +88,12 @@ public abstract class WriteLoadableModel<T, ID extends Serializable> extends Rea
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     * @return the id
+     */
     public WriteLoadableModel<T, ID> setId(ID id) {
         if (id != null) {
             setObject(findById(id).get());
@@ -59,6 +103,12 @@ public abstract class WriteLoadableModel<T, ID extends Serializable> extends Rea
         return this;
     }
 
+    /**
+     * Extract id id.
+     *
+     * @param entity the entity
+     * @return the id
+     */
     protected abstract ID extractId(T entity);
 
 }

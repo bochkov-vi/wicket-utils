@@ -8,8 +8,18 @@ import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import java.util.Set;
 
+/**
+ * The type Active link behavior.
+ *
+ * @param <C> the type parameter
+ */
 public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
 
+    /**
+     * For bookmarkable active link behavior.
+     *
+     * @return the active link behavior
+     */
     public static ActiveLinkBehavior<BookmarkablePageLink> forBookmarkable() {
         return new ActiveLinkBehavior<BookmarkablePageLink>() {
             @Override
@@ -19,6 +29,12 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
         };
     }
 
+    /**
+     * Of active link behavior.
+     *
+     * @param link the link
+     * @return the active link behavior
+     */
     public static ActiveLinkBehavior<BookmarkablePageLink> of(BookmarkablePageLink link) {
         return new ActiveLinkBehavior<BookmarkablePageLink>() {
             @Override
@@ -29,6 +45,14 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
     }
 
 
+    /**
+     * Of active link behavior.
+     *
+     * @param <C>       the type parameter
+     * @param component the component
+     * @param predicate the predicate
+     * @return the active link behavior
+     */
     public static <C extends Component> ActiveLinkBehavior<C> of(C component, final SerializableFunction<C, Boolean> predicate) {
         return new ActiveLinkBehavior<C>() {
             public boolean isActive(C component) {
@@ -37,6 +61,13 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
         };
     }
 
+    /**
+     * Of active link behavior.
+     *
+     * @param <C>       the type parameter
+     * @param predicate the predicate
+     * @return the active link behavior
+     */
     public static <C extends Component> ActiveLinkBehavior<C> of(final SerializableFunction<C, Boolean> predicate) {
         return new ActiveLinkBehavior<C>() {
             public boolean isActive(C component) {
@@ -59,5 +90,11 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
         });
     }
 
+    /**
+     * Is active boolean.
+     *
+     * @param component the component
+     * @return the boolean
+     */
     public abstract boolean isActive(C component);
 }

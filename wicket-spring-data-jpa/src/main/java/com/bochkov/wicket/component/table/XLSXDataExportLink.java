@@ -18,14 +18,35 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The type Xlsx data export link.
+ */
 public class XLSXDataExportLink extends ResourceLink<Void> {
 
+    /**
+     * The Table.
+     */
     DataTable table;
 
+    /**
+     * Instantiates a new Xlsx data export link.
+     *
+     * @param id       the id
+     * @param table    the table
+     * @param fileName the file name
+     */
     public XLSXDataExportLink(String id, DataTable table, String fileName) {
         this(id, table, new XLSXDataExporter(), fileName);
     }
 
+    /**
+     * Instantiates a new Xlsx data export link.
+     *
+     * @param id       the id
+     * @param table    the table
+     * @param exporter the exporter
+     * @param fileName the file name
+     */
     protected XLSXDataExportLink(String id, DataTable table, IDataExporter exporter, String fileName) {
 
         super(id, new ResourceStreamResource() {
@@ -52,12 +73,21 @@ public class XLSXDataExportLink extends ResourceLink<Void> {
         setVisible(table.getRowCount() > 0);
     }
 
+    /**
+     * The type Data export resource stream writer.
+     */
     public static class DataExportResourceStreamWriter extends AbstractResourceStreamWriter {
 
         private final IDataExporter dataExporter;
 
         private final DataTable<?, ?> dataTable;
 
+        /**
+         * Instantiates a new Data export resource stream writer.
+         *
+         * @param dataExporter the data exporter
+         * @param dataTable    the data table
+         */
         public DataExportResourceStreamWriter(IDataExporter dataExporter, DataTable<?, ?> dataTable) {
             this.dataExporter = dataExporter;
             this.dataTable = dataTable;
