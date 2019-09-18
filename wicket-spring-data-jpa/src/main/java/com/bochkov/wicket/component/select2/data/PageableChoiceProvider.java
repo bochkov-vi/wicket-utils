@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.wicketstuff.select2.ChoiceProvider;
 import org.wicketstuff.select2.Response;
 
+import java.util.Optional;
+
 /**
  * The type Pageable choice provider.
  *
@@ -20,6 +22,12 @@ public abstract class PageableChoiceProvider<T> extends ChoiceProvider<T> {
         response.setResults(pageResponse.getContent());
         response.setHasMore(pageResponse.hasNext());
     }
+
+    @Override
+    public String getDisplayValue(T object) {
+        return Optional.ofNullable(object).map(String::valueOf).orElse(null);
+    }
+
 
     /**
      * Find by mask page.
