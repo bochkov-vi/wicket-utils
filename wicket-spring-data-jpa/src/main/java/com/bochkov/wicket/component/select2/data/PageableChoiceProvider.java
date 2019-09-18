@@ -6,7 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.wicketstuff.select2.ChoiceProvider;
 import org.wicketstuff.select2.Response;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The type Pageable choice provider.
@@ -28,6 +32,13 @@ public abstract class PageableChoiceProvider<T> extends ChoiceProvider<T> {
         return Optional.ofNullable(object).map(String::valueOf).orElse(null);
     }
 
+
+    @Override
+    public Collection<T> toChoices(Collection<String> ids) {
+        return Optional.ofNullable(ids).map(collection -> collection.stream().map(this::toChoise).filter(Objects::nonNull).collect(Collectors.toList())).orElse(Collections.emptyList());
+    }
+
+    public abstract T toChoise(String id);
 
     /**
      * Find by mask page.

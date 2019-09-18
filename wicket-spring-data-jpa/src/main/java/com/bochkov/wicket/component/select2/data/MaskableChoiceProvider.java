@@ -11,11 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.wicketstuff.select2.Response;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * The type Maskable choice provider.
@@ -67,15 +64,19 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
      */
     protected abstract Page<T> findAll(Specification<T> specification, Pageable pageRequest);
 
-    @Override
+   /* @Override
     public Collection<T> toChoices(Collection<String> ids) {
         return ids.stream()
                 .map(this::toId)
                 .map(id -> findById(id).orElse(null))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-    }
+    }*/
 
+    @Override
+    public T toChoise(String id) {
+        return Optional.ofNullable(id).map(this::toId).flatMap(this::findById).orElse(null);
+    }
 
     /**
      * Gets masked properties.
