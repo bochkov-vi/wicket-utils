@@ -1,8 +1,11 @@
 package com.bochkov.wicket.component.select2.data;
 
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.danekja.java.util.function.serializable.SerializableBiFunction;
+import org.danekja.java.util.function.serializable.SerializableFunction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,32 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
     @Getter
     @Setter
     Iterable<String> maskedProperties;
+
+    public static <T extends Persistable<ID>, ID extends Serializable> MaskableChoiceProvider<T, ID> of(
+            SerializableBiFunction<Specification<T>, Pageable, Page<T>> specificationExecutor,
+            SerializableFunction<String, ID> idExtractor,
+            SerializableFunction<ID, Optional<T>> loader,
+            String... maskableProperties
+    ) {
+        MaskableChoiceProvider<T, ID> provider = new MaskableChoiceProvider<T, ID>() {
+            @Override
+            protected Page<T> findAll(Specification<T> specification, Pageable pageRequest) {
+                return specificationExecutor.apply(specification, pageRequest);
+            }
+
+            @Override
+            public ID toId(String str) {
+                return idExtractor.apply(str);
+            }
+
+            @Override
+            public Optional<? extends T> findById(ID id) {
+                return loader.apply(id);
+            }
+        };
+        provider.setMaskedProperties(Lists.newArrayList(maskableProperties));
+        return provider;
+    }
 
 
     @Override
