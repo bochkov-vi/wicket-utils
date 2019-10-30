@@ -10,13 +10,14 @@ import org.apache.wicket.model.IModel;
 /**
  * The type Bootstrap navigation toolbar.
  */
-public class BootstrapNavigationToolbar extends AbstractToolbar {
+public class BootstrapPaginationToolbar extends AbstractToolbar {
+
     /**
      * Instantiates a new Bootstrap navigation toolbar.
      *
      * @param table the table
      */
-    public BootstrapNavigationToolbar(DataTable<?, ?> table) {
+    public BootstrapPaginationToolbar(DataTable<?, ?> table) {
         super(table);
         WebMarkupContainer span = new WebMarkupContainer("span");
         add(span);
@@ -40,5 +41,11 @@ public class BootstrapNavigationToolbar extends AbstractToolbar {
     protected Component newPagingNavigator(final String navigatorId,
                                            final DataTable<?, ?> table) {
         return new BootstrapPaginationPanel(navigatorId, table);
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        setVisible(getTable().getPageCount() > 1);
     }
 }

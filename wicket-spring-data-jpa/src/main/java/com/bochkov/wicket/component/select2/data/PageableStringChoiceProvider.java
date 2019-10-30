@@ -19,7 +19,7 @@ public abstract class PageableStringChoiceProvider extends PageableChoiceProvide
     }
 
     @Override
-    public Collection<String> toChoices(Collection<String> ids) {
-        return ids;
+    public String toChoise(String id) {
+        return id;
     }
 }

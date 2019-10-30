@@ -50,11 +50,12 @@ public class BootstrapPaginationPanel extends Panel {
         add(createPageItem("last", (IModel<Long>) () -> table.getPageCount() - 1));
         add(createPageItem("next", (IModel<Long>) () -> table.getCurrentPage() + 1));
         add(createPageItem("prev", (IModel<Long>) () -> table.getCurrentPage() - 1));
-        add(new ListView<Long>("link-index", new LoadableDetachableModel<List<Long>>() {
+        add(new ListView<Long>("link-index", new IModel<List<Long>>() {
             @Override
-            protected List<Long> load() {
+            public List<Long> getObject() {
                 final long pageCount = table.getPageCount();
-                long start = table.getCurrentPage() - pageLinksCount / 2;
+                final long currentPage = table.getCurrentPage();
+                long start = currentPage - pageLinksCount / 2;
                 if (start < 0) {
                     start = 0;
                 }

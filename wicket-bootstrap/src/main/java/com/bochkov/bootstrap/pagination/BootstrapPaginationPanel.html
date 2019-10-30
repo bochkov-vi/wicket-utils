@@ -7,9 +7,9 @@
             line-height: inherit !important;
         }
     </style>
-    <div class="row">
+    <div class="flex-row d-flex">
         <ul class="pagination">
-            <li wicket:id="first" class="page-item">
+            <li wicket:id="first" class="page-item flex-column">
                 <a wicket:id="link" class="page-link" href="#">
                     <i class="fa fa-fast-backward"/>
                     <span>&nbsp;</span>
@@ -34,7 +34,7 @@
                 </a>
             </li>
         </ul>
-        <ul wicket:id="rows-per-page" class="pagination">
+        <ul wicket:id="rows-per-page" class="pagination flex-column">
 
         </ul>
     </div>
