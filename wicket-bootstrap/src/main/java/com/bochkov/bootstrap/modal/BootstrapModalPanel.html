@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+    <div wicket:id="modal-dialog" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div  class="modal-header">
+                <h5 class="modal-title"><span wicket:id="header-label">[Header Label]</span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div wicket:id="modal-body" class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div wicket:id="modal-footer" class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+
+        </div>
+    </div>
+</wicket:panel>
+</body>
+</html>
