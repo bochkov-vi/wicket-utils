@@ -4,6 +4,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SingleSortState;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
+import org.danekja.java.util.function.serializable.SerializableSupplier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Persistable;
@@ -29,6 +30,28 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
      */
     transient Long size = null;
 
+    public static <T extends Persistable<ID>, ID extends Serializable, R extends JpaSpecificationExecutor<T> & CrudRepository<T, ID>> PersistableDataProvider<T, ID> of(SerializableSupplier<R> repository) {
+        return new PersistableDataProvider<T, ID>() {
+            @Override
+            public R getRepository() {
+                return repository.get();
+            }
+        };
+    }
+    public static <T extends Persistable<ID>, ID extends Serializable, R extends JpaSpecificationExecutor<T> & CrudRepository<T, ID>> PersistableDataProvider<T, ID> of(SerializableSupplier<R> repository,SerializableSupplier<Specification<T>>specification) {
+        return new PersistableDataProvider<T, ID>() {
+            @Override
+            public R getRepository() {
+                return repository.get();
+            }
+
+            @Override
+            public Specification<T> createSpecification() {
+                return specification.get();
+            }
+        };
+    }
+
 
     @Override
     public Iterator<? extends T> iterator(long first, long count) {
@@ -52,7 +75,7 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
      * @return the sort
      */
     protected Sort getSort(SingleSortState<String> sortState) {
-        return Optional.of(sortState).map(st -> st.getSort()).map(s -> new Sort(s.isAscending() ? Sort.Direction.ASC : Sort.Direction.DESC, s.getProperty())).orElse(Sort.unsorted());
+        return Optional.of(sortState).map(SingleSortState::getSort).map(s -> Sort.by(s.isAscending() ? Sort.Direction.ASC : Sort.Direction.DESC, s.getProperty())).orElse(Sort.unsorted());
     }
 
     /**

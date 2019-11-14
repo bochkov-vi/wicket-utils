@@ -1,5 +1,6 @@
 package com.bochkov.wicket.component.select2.data;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
@@ -80,7 +81,8 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
 
 
     public Page<T> findByMask(String term, Pageable pageRequest) {
-        Specification<T> maskedSpecification = Maskable.maskSpecification(term, maskedProperties);
+        String expression = Optional.ofNullable(term).filter(s -> !Strings.isNullOrEmpty(s)).orElse("%");
+        Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties);
         return findAll(Optional.ofNullable(maskedSpecification).map(m -> m.and(excludeSpecification())).orElse(null), pageRequest);
     }
 
