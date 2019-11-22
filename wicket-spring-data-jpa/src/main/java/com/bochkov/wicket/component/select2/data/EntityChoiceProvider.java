@@ -27,6 +27,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public abstract class EntityChoiceProvider<T extends Persistable<ID>, ID extends Serializable> extends MaskableChoiceProvider<T, ID> {
 
+    public EntityChoiceProvider(String... properties) {
+        super();
+        setMaskedProperties(Lists.newArrayList(properties));
+    }
+
     /**
      * Of entity choice provider.
      *
@@ -39,6 +44,7 @@ public abstract class EntityChoiceProvider<T extends Persistable<ID>, ID extends
      * @param properties   the properties
      * @return the entity choice provider
      */
+
     public static <T extends Persistable<ID>, ID extends Serializable> EntityChoiceProvider<T, ID> of(
             SerializableFunction<String, ID> idConverter,
             SerializableFunction<ID, Optional<T>> entityLoader,
@@ -74,6 +80,7 @@ public abstract class EntityChoiceProvider<T extends Persistable<ID>, ID extends
         provider.setMaskedProperties(Lists.newArrayList(properties));
         return provider;
     }
+
 
     /**
      * Of entity choice provider.
