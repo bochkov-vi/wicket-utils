@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public abstract class PageableStringChoiceProvider extends PageableChoiceProvider<String> {
 
 
-    public PageableStringChoiceProvider of(SerializableBiFunction<String, Pageable, Page<String>> finder) {
+    public static PageableStringChoiceProvider of(SerializableBiFunction<String, Pageable, Page<String>> finder) {
         PageableStringChoiceProvider provider = new PageableStringChoiceProvider() {
             @Override
             public Page<String> findByMask(String term, Pageable pageRequest) {
