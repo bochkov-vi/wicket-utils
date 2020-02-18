@@ -6,20 +6,20 @@ import org.danekja.java.util.function.serializable.SerializableFunction;
 import java.io.Serializable;
 import java.util.Optional;
 
-public abstract class NonSerializableModel<ID , T> extends LoadableDetachableModel<T> {
+public abstract class NonSerializableModel<ID, T> extends LoadableDetachableModel<T> {
 
     protected ID id;
 
-    public static <ID extends Serializable, T> NonSerializableModel<ID, T> off(SerializableFunction<T, ID> packer, SerializableFunction<ID, T> unpacker) {
+    public static <ID extends Serializable, T> NonSerializableModel<ID, T> of(SerializableFunction<T, ID> packer, SerializableFunction<ID, Optional<T>> unpacker) {
         return new NonSerializableModel<ID, T>() {
             @Override
             public ID pack(T object) {
-                return packer.apply(object);
+                return Optional.ofNullable(object).map(packer::apply).orElse(null);
             }
 
             @Override
             public T unpack(ID id) {
-                return unpacker.apply(id);
+                return Optional.ofNullable(id).flatMap(unpacker::apply).orElse(null);
             }
         };
     }
