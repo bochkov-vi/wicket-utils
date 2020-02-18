@@ -8,10 +8,10 @@ import org.springframework.data.domain.Persistable;
 import java.io.Serializable;
 import java.util.*;
 
-public abstract class AbstractCollectionModel<T extends Persistable<ID>, ID extends Serializable, C extends Collection<T>> extends NonSerializableModel<Collection<ID>, C> {
+public abstract class CollectionModel<T extends Persistable<ID>, ID extends Serializable, C extends Collection<T>> extends NonSerializableModel<Collection<ID>, C> {
 
-    public static <T extends Persistable<ID>, ID extends Serializable> AbstractCollectionModel<T, ID, Collection<T>> off(SerializableFunction<ID, Optional<T>> entityLoader) {
-        return new AbstractCollectionModel<T, ID, Collection<T>>() {
+    public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, Collection<T>> of(SerializableFunction<ID, Optional<T>> entityLoader) {
+        return new CollectionModel<T, ID, Collection<T>>() {
             @Override
             public Optional<T> toEntity(ID id) {
                 return Optional.ofNullable(id).map(entityLoader::apply).orElse(null);
@@ -19,8 +19,8 @@ public abstract class AbstractCollectionModel<T extends Persistable<ID>, ID exte
         };
     }
 
-    public static <T extends Persistable<ID>, ID extends Serializable> AbstractCollectionModel<T, ID, List<T>> list(SerializableFunction<ID, Optional<T>> entityLoader) {
-        return new AbstractCollectionModel<T, ID, List<T>>() {
+    public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, List<T>> asList(SerializableFunction<ID, Optional<T>> entityLoader) {
+        return new CollectionModel<T, ID, List<T>>() {
             @Override
             public Optional<T> toEntity(ID id) {
                 return Optional.ofNullable(id).map(entityLoader::apply).orElse(null);
@@ -33,8 +33,8 @@ public abstract class AbstractCollectionModel<T extends Persistable<ID>, ID exte
         };
     }
 
-    public static <T extends Persistable<ID>, ID extends Serializable> AbstractCollectionModel<T, ID, Set<T>> set(SerializableFunction<ID, Optional<T>> entityLoader) {
-        return new AbstractCollectionModel<T, ID, Set<T>>() {
+    public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, Set<T>> asSet(SerializableFunction<ID, Optional<T>> entityLoader) {
+        return new CollectionModel<T, ID, Set<T>>() {
             @Override
             public Optional<T> toEntity(ID id) {
                 return Optional.ofNullable(id).map(entityLoader::apply).orElse(null);
