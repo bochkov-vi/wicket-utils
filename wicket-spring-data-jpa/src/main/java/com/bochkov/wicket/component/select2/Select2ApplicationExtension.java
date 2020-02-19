@@ -14,15 +14,9 @@ import java.util.List;
  * The type Select 2 application extension.
  */
 /*@ApplicationInitExtension*/
-public class Select2ApplicationExtension /*implements WicketApplicationInitConfiguration */{
+public class Select2ApplicationExtension /*implements WicketApplicationInitConfiguration */ {
 
-    /**
-     * Init.
-     *
-     * @param webApplication the web application
-     */
-    /*@Override*/
-    public void init(WebApplication webApplication) {
+    public static void install(WebApplication webApplication) {
         ApplicationSettings.get().setJavaScriptReference(new WebjarsJavaScriptResourceReference("resources/webjars/select2/current/js/select2.full.js"));
         ApplicationSettings.get().setCssReference(new WebjarsCssResourceReference("resources/webjars/select2/current/css/select2.css"));
         ApplicationSettings.get().setCssReference(new WebjarsCssResourceReference("resources/webjars/select2-bootstrap4-theme/current/dist/select2-bootstrap4.min.css") {
@@ -31,5 +25,15 @@ public class Select2ApplicationExtension /*implements WicketApplicationInitConfi
                 return Lists.newArrayList(CssHeaderItem.forReference(new WebjarsCssResourceReference("resources/webjars/select2/current/css/select2.css")));
             }
         });
+    }
+
+    /**
+     * Init.
+     *
+     * @param webApplication the web application
+     */
+    /*@Override*/
+    public void init(WebApplication webApplication) {
+        install(webApplication);
     }
 }
