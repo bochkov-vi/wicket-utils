@@ -26,7 +26,8 @@ public abstract class NonSerializableModel<ID, T> extends LoadableDetachableMode
 
     @Override
     protected T load() {
-        return Optional.ofNullable(id).map(this::unpack).orElse(null);
+        T result = Optional.ofNullable(id).map(this::unpack).orElse(null);
+        return result;
     }
 
     @Override

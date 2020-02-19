@@ -2,6 +2,7 @@ package com.bochkov.wicket.data.model.nonser;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.wicket.model.IModel;
 import org.danekja.java.util.function.serializable.SerializableFunction;
 import org.springframework.data.domain.Persistable;
 
@@ -67,5 +68,19 @@ public abstract class CollectionModel<T extends Persistable<ID>, ID extends Seri
 
     public C createResultCollection(Iterator<T> collection) {
         return (C) Lists.newArrayList(collection);
+    }
+
+    public IModel<Boolean> isPresent() {
+        return new IModel<Boolean>() {
+            @Override
+            public Boolean getObject() {
+                return CollectionModel.this.getObject() != null && !CollectionModel.this.getObject().isEmpty();
+            }
+
+            @Override
+            public void detach() {
+                CollectionModel.this.detach();
+            }
+        };
     }
 }

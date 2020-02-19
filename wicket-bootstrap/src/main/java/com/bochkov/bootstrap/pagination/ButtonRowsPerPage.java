@@ -6,7 +6,8 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 
 import java.util.Arrays;
 
@@ -14,10 +15,12 @@ import java.util.Arrays;
  * The type Button rows per page.
  */
 public class ButtonRowsPerPage extends Panel {
+
     /**
      * The Rows perpage.
      */
     Long[] rowsPerpage;
+
     /**
      * The Table.
      */
@@ -39,21 +42,18 @@ public class ButtonRowsPerPage extends Panel {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        add(new Label("drop-down-button", new LoadableDetachableModel<Long>() {
-            @Override
-            protected Long load() {
-                return table.getItemsPerPage();
-            }
-        }));
+        add(new Label("drop-down-button", new StringResourceModel("perpage.template", this, Model.of(table))));
         ListView listView = new ListView<Long>("rows-count-link", Arrays.asList(rowsPerpage)) {
             @Override
             protected void populateItem(ListItem<Long> item) {
-                item.add(new Link<Long>("link", item.getModel()) {
+                Link link = new Link<Long>("link", item.getModel()) {
                     @Override
                     public void onClick() {
                         table.setItemsPerPage(getModelObject());
                     }
-                }.setBody(item.getModel()));
+                };
+                link.add(new Label("label", item.getModel()));
+                item.add(link);
             }
         };
         add(listView);

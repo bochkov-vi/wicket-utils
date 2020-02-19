@@ -1,6 +1,6 @@
 package com.bochkov.bootstrap;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import de.agilecoders.wicket.webjars.request.resource.WebjarsCssResourceReference;
 import de.agilecoders.wicket.webjars.request.resource.WebjarsJavaScriptResourceReference;
 import org.apache.wicket.Application;
@@ -10,6 +10,7 @@ import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.HeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.request.resource.ResourceReference;
 
 import java.util.List;
 
@@ -17,25 +18,24 @@ import java.util.List;
  * The type Bootstrap behavior.
  */
 public class BootstrapBehavior extends Behavior {
-    @Override
-    public void bind(Component component) {
-        super.bind(component);
-    }
+
+    public static ResourceReference CSS = new WebjarsCssResourceReference("bootstrap/current/css/bootstrap.min.css");
+
+    public static ResourceReference JS = new WebjarsCssResourceReference("bootstrap/current/js/bootstrap.min.js") {
+        @Override
+        public List<HeaderItem> getDependencies() {
+            return ImmutableList.of(
+                    JavaScriptHeaderItem.forReference(Application.get().getJavaScriptLibrarySettings().getJQueryReference()),
+                    JavaScriptHeaderItem.forReference(new WebjarsJavaScriptResourceReference("popper.js/current/umd/popper.min.js"))
+            );
+        }
+    };
+
 
     @Override
     public void renderHead(Component component, IHeaderResponse response) {
         super.renderHead(component, response);
-        response.render(JavaScriptHeaderItem.forReference(new WebjarsJavaScriptResourceReference("webjars/bootstrap/current/js/bootstrap.js") {
-            @Override
-            public List<HeaderItem> getDependencies() {
-                List<HeaderItem> result = Lists.newArrayList();
-                result.add(JavaScriptHeaderItem.forReference(Application.get().getJavaScriptLibrarySettings().getJQueryReference()));
-                result.add(JavaScriptHeaderItem.forReference(new WebjarsJavaScriptResourceReference("webjars/popper.js/current/umd/popper.min.js")));
-                return result;
-
-            }
-        }));
-        response.render(CssHeaderItem.forReference(new WebjarsCssResourceReference("webjars/bootstrap/current/css/bootstrap.css")));
-        response.render(CssHeaderItem.forReference(new WebjarsCssResourceReference("resources/webjars/font-awesome/current/css/font-awesome.css")));
+        response.render(JavaScriptHeaderItem.forReference(JS));
+        response.render(CssHeaderItem.forReference(CSS));
     }
 }
