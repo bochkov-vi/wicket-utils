@@ -11,7 +11,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 
 import java.util.List;
@@ -22,10 +21,14 @@ import java.util.Set;
  * The type Bootstrap pagination panel.
  */
 public class BootstrapPaginationPanel extends Panel {
+
     /**
      * The Table.
      */
     DataTable table;
+
+    ButtonRowsPerPage buttonRowsPerPage;
+
     /**
      * The Page links count.
      */
@@ -37,15 +40,22 @@ public class BootstrapPaginationPanel extends Panel {
      * @param id    the id
      * @param table the table
      */
+    public BootstrapPaginationPanel(String id, DataTable table, Long... perPage) {
+        super(id);
+        this.table = table;
+        buttonRowsPerPage = new ButtonRowsPerPage("rows-per-page", table, perPage);
+    }
+
     public BootstrapPaginationPanel(String id, DataTable table) {
         super(id);
         this.table = table;
+        buttonRowsPerPage = new ButtonRowsPerPage("rows-per-page", table, 20L, 50L, 100L);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        add(new ButtonRowsPerPage("rows-per-page",table, 20L, 50L, 100L));
+        add(buttonRowsPerPage);
         add(createPageItem("first", Model.of(0l)));
         add(createPageItem("last", (IModel<Long>) () -> table.getPageCount() - 1));
         add(createPageItem("next", (IModel<Long>) () -> table.getCurrentPage() + 1));
@@ -64,10 +74,12 @@ public class BootstrapPaginationPanel extends Panel {
                 }
                 List<Long> list = Lists.newArrayList();
                 for (long i = 0; i < pageLinksCount; i++) {
-                    if (start + i > pageCount)
+                    if (start + i > pageCount) {
                         break;
-                    if (start + i < 0)
+                    }
+                    if (start + i < 0) {
                         continue;
+                    }
                     list.add(start + i);
 
                 }
