@@ -2,6 +2,7 @@ package com.bochkov.bootstrap;
 
 import org.apache.wicket.ClassAttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.danekja.java.util.function.serializable.SerializableFunction;
@@ -77,14 +78,24 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
     }
 
 
+    public static <C extends Component> ActiveLinkBehavior<C> of(Class<? extends Page> pageClass) {
+        return new ActiveLinkBehavior<C>() {
+            @Override
+            public boolean isActive(C component) {
+                return component.getPage().getClass().isAssignableFrom(pageClass);
+            }
+        };
+    }
+
     @Override
     public void bind(final Component component) {
         super.bind(component);
         component.add(new ClassAttributeModifier() {
             @Override
             protected Set<String> update(Set<String> oldClasses) {
-                if (isActive((C) component))
+                if (isActive((C) component)) {
                     oldClasses.add("active");
+                }
                 return oldClasses;
             }
         });

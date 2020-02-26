@@ -20,6 +20,18 @@ public abstract class CollectionModel<T extends Persistable<ID>, ID extends Seri
         };
     }
 
+    public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, Collection<T>> of(SerializableFunction<ID, Optional<T>> entityLoader, T... entity) {
+        CollectionModel<T, ID, Collection<T>> result = of(entityLoader);
+        result.setObject(Lists.newArrayList(entity));
+        return result;
+    }
+
+    public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, Collection<T>> of(SerializableFunction<ID, Optional<T>> entityLoader, ID... id) {
+        CollectionModel<T, ID, Collection<T>> result = of(entityLoader);
+        result.setKey(Lists.newArrayList(id));
+        return result;
+    }
+
     public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, List<T>> asList(SerializableFunction<ID, Optional<T>> entityLoader) {
         return new CollectionModel<T, ID, List<T>>() {
             @Override
