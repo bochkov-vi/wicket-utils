@@ -95,6 +95,8 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
             protected Set<String> update(Set<String> oldClasses) {
                 if (isActive((C) component)) {
                     oldClasses.add("active");
+                } else {
+                    oldClasses.remove("active");
                 }
                 return oldClasses;
             }
