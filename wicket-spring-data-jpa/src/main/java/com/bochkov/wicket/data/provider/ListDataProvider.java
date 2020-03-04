@@ -83,9 +83,14 @@ public abstract class ListDataProvider<T> implements IDataProvider<T> {
 
     @Override
     public long size() {
-        return getData().map(Collection::size).getObject();
+        return getData().map(Collection::size).orElse(0).getObject();
     }
 
-    @Override
+	@Override
+	public void detach() {
+		list.detach();
+	}
+
+	@Override
     public abstract IModel<T> model(T object);
 }
