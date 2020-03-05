@@ -24,6 +24,7 @@ import org.apache.wicket.model.util.ListModel;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 /**
@@ -34,7 +35,7 @@ import java.util.List;
  * @param <T>
  * @author Igor Vaynberg ( ivaynberg )
  */
-public abstract class ListDataProvider<T> implements IDataProvider<T> {
+public abstract class ListModelDataProvider<T> implements IDataProvider<T> {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,14 +47,14 @@ public abstract class ListDataProvider<T> implements IDataProvider<T> {
     /**
      * Constructs an empty provider. Useful for lazy loading together with {@linkplain #getData()}
      */
-    public ListDataProvider() {
+    public ListModelDataProvider() {
         this(new ListModel<>());
     }
 
     /**
      * @param list the list used as dataprovider for the dataview
      */
-    public ListDataProvider(IModel<List<T>> list) {
+    public ListModelDataProvider(IModel<List<T>> list) {
         if (list == null) {
             throw new IllegalArgumentException("argument [list] cannot be null");
         }
@@ -72,13 +73,12 @@ public abstract class ListDataProvider<T> implements IDataProvider<T> {
 
     @Override
     public Iterator<T> iterator(final long first, final long count) {
-        List<T> list = getData().getObject();
+        Stream<T> stream = stream();
+        return stream.skip(first).limit(count).iterator();
+    }
 
-        long toIndex = first + count;
-        if (toIndex > list.size()) {
-            toIndex = list.size();
-        }
-        return list.subList((int) first, (int) toIndex).listIterator();
+    public Stream<T> stream() {
+        return list.map(Collection::stream).orElseGet(Stream::of).getObject();
     }
 
     @Override
@@ -86,11 +86,11 @@ public abstract class ListDataProvider<T> implements IDataProvider<T> {
         return getData().map(Collection::size).orElse(0).getObject();
     }
 
-	@Override
-	public void detach() {
-		list.detach();
-	}
+    @Override
+    public void detach() {
+        list.detach();
+    }
 
-	@Override
+    @Override
     public abstract IModel<T> model(T object);
 }
