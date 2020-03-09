@@ -36,6 +36,7 @@ public class LocalDateTextField extends org.apache.wicket.extensions.markup.html
      */
     public LocalDateTextField(String id, String pattern) {
         super(id, pattern);
+        options.pattern = pattern;
     }
 
     /**
@@ -47,6 +48,7 @@ public class LocalDateTextField extends org.apache.wicket.extensions.markup.html
      */
     public LocalDateTextField(String id, IModel<LocalDate> model, String pattern) {
         super(id, model, pattern);
+        options.pattern = pattern;
     }
 
     private void init() {
@@ -112,7 +114,7 @@ public class LocalDateTextField extends org.apache.wicket.extensions.markup.html
             JSONStringer stringer = new JSONStringer();
             stringer.object();
             Json.writeObject(stringer, "language", language);
-            Json.writeObject(stringer, "pattern", pattern);
+            Json.writeObject(stringer, "format", Dates.toJavaScriptDateFormat(pattern));
             Json.writeObject(stringer, "clearBtn", clearBtn);
             Json.writeObject(stringer, "todayBtn", todayBtn);
             Json.writeObject(stringer, "todayHighlight", todayHighlight);
