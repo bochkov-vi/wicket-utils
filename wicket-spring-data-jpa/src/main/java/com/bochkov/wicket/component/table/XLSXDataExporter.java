@@ -140,7 +140,11 @@ public class XLSXDataExporter extends AbstractDataExporter {
         DataFormat format = workbook.createDataFormat();
         XSSFCellStyle numberCellStyle = workbook.createCellStyle();
         numberCellStyle.cloneStyleFrom(cellStyle);
-        numberCellStyle.setDataFormat(format.getFormat("#0.000"));
+        numberCellStyle.setDataFormat(format.getFormat("# ###.000"));
+
+        XSSFCellStyle intCellStyle = workbook.createCellStyle();
+        intCellStyle.cloneStyleFrom(cellStyle);
+        intCellStyle.setDataFormat(format.getFormat("#"));
 
         XSSFCellStyle dateCellStyle = null;
         int rowNum = 1;
@@ -162,8 +166,25 @@ public class XLSXDataExporter extends AbstractDataExporter {
                 } else if (value instanceof Double) {
                     cell.setCellValue((Double) value);
                     cell.setCellStyle(numberCellStyle);
+                } else if (value instanceof Float) {
+                    cell.setCellValue((Float) value);
+                    cell.setCellStyle(numberCellStyle);
+                } else if (value instanceof Integer) {
+                    cell.setCellValue((Integer) value);
+                    cell.setCellStyle(intCellStyle);
+                } else if (value instanceof Long) {
+                    cell.setCellValue((Long) value);
+                    cell.setCellStyle(intCellStyle);
                 } else if (value instanceof LocalDate) {
                     cell.setCellValue(Date.valueOf((LocalDate) value));
+                    if (dateCellStyle == null) {
+                        dateCellStyle = workbook.createCellStyle();
+                        dateCellStyle.cloneStyleFrom(cellStyle);
+                        dateCellStyle.setDataFormat(14);
+                    }
+                    cell.setCellStyle(dateCellStyle);
+                } else if (value instanceof java.sql.Date) {
+                    cell.setCellValue((java.sql.Date) value);
                     if (dateCellStyle == null) {
                         dateCellStyle = workbook.createCellStyle();
                         dateCellStyle.cloneStyleFrom(cellStyle);
