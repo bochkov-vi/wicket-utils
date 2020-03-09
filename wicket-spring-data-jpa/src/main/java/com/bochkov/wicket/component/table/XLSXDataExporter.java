@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.*;
 import org.apache.wicket.Application;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Session;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.export.AbstractDataExporter;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.export.IExportableColumn;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -33,6 +34,8 @@ import java.util.Optional;
 @Accessors(chain = true)
 public class XLSXDataExporter extends AbstractDataExporter {
 
+    DataTable table;
+
     @Getter
     @Setter
     private boolean exportHeadersEnabled = true;
@@ -44,15 +47,24 @@ public class XLSXDataExporter extends AbstractDataExporter {
         this(Model.of("XLSX"));
     }
 
+    public XLSXDataExporter(DataTable table) {
+        this(Model.of("XLSX"));
+        this.table = table;
+    }
+
+
     /**
      * Creates a new instance with the data format name model, content type and file name extensions provided.
      *
      * @param dataFormatNameModel The model of the exported data format name.
      */
-
-
     public XLSXDataExporter(IModel<String> dataFormatNameModel) {
+        this(dataFormatNameModel, null);
+    }
+
+    public XLSXDataExporter(IModel<String> dataFormatNameModel, DataTable table) {
         super(dataFormatNameModel, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx");
+        this.table = table;
     }
 
     @Override
@@ -103,6 +115,9 @@ public class XLSXDataExporter extends AbstractDataExporter {
      * @return the model
      */
     protected <T> IModel<T> wrapModel(IModel<T> model) {
+        if (table != null && model instanceof IComponentAssignedModel) {
+            return ((IComponentAssignedModel<T>) model).wrapOnAssignment(table);
+        }
         return model;
     }
 
