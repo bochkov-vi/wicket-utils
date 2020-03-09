@@ -140,7 +140,7 @@ public class XLSXDataExporter extends AbstractDataExporter {
         DataFormat format = workbook.createDataFormat();
         XSSFCellStyle numberCellStyle = workbook.createCellStyle();
         numberCellStyle.cloneStyleFrom(cellStyle);
-        numberCellStyle.setDataFormat(format.getFormat("# ###.000"));
+        numberCellStyle.setDataFormat(format.getFormat("# ##0.000"));
 
         XSSFCellStyle intCellStyle = workbook.createCellStyle();
         intCellStyle.cloneStyleFrom(cellStyle);
