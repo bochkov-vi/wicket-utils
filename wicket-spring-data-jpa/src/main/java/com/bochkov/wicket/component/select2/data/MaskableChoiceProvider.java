@@ -25,7 +25,7 @@ import java.util.Optional;
  * @param <ID> the type parameter
  */
 @Accessors(chain = true)
-public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID extends Serializable> extends PageableChoiceProvider<T> implements Maskable {
+public abstract class MaskableChoiceProvider<T, ID extends Serializable> extends PageableChoiceProvider<T> implements Maskable {
 
     /**
      * The Masked properties.
@@ -34,31 +34,6 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
     @Setter
     Iterable<String> maskedProperties;
 
-    public static <T extends Persistable<ID>, ID extends Serializable> MaskableChoiceProvider<T, ID> of(
-            SerializableBiFunction<Specification<T>, Pageable, Page<T>> specificationExecutor,
-            SerializableFunction<String, ID> idExtractor,
-            SerializableFunction<ID, Optional<T>> loader,
-            String... maskableProperties
-    ) {
-        MaskableChoiceProvider<T, ID> provider = new MaskableChoiceProvider<T, ID>() {
-            @Override
-            protected Page<T> findAll(Specification<T> specification, Pageable pageRequest) {
-                return specificationExecutor.apply(specification, pageRequest);
-            }
-
-            @Override
-            public ID toId(String str) {
-                return idExtractor.apply(str);
-            }
-
-            @Override
-            public Optional<? extends T> findById(ID id) {
-                return loader.apply(id);
-            }
-        };
-        provider.setMaskedProperties(Lists.newArrayList(maskableProperties));
-        return provider;
-    }
 
 
     @Override
@@ -67,9 +42,7 @@ public abstract class MaskableChoiceProvider<T extends Persistable<ID>, ID exten
     }
 
     @Override
-    public String getIdValue(T object) {
-        return Optional.ofNullable(object).map(Persistable::getId).map(Object::toString).orElse("");
-    }
+    public abstract String getIdValue(T object);
 
     @Override
     public void query(String term, int page, Response<T> response) {

@@ -100,4 +100,9 @@ public abstract class EntityChoiceProvider<T extends Persistable<ID>, ID extends
             String... properties) {
         return of(idConverter, entityLoader, pageLoader, null, properties);
     }
+
+    @Override
+    public String getIdValue(T e) {
+        return Optional.ofNullable(e).map(Persistable::getId).map(String::valueOf).orElse(null);
+    }
 }
