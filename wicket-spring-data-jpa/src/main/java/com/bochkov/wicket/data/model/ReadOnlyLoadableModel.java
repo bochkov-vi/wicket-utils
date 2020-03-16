@@ -79,5 +79,7 @@ public abstract class ReadOnlyLoadableModel<T, ID> extends LoadableDetachableMod
      *
      * @return the t
      */
-    public abstract T ifNullGet();
+    public T ifNullGet() {
+        return null;
+    }
 }
