@@ -39,7 +39,8 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
             }
         };
     }
-    public static <T extends Persistable<ID>, ID extends Serializable, R extends JpaSpecificationExecutor<T> & CrudRepository<T, ID>> PersistableDataProvider<T, ID> of(SerializableSupplier<R> repository,SerializableSupplier<Specification<T>>specification) {
+
+    public static <T extends Persistable<ID>, ID extends Serializable, R extends JpaSpecificationExecutor<T> & CrudRepository<T, ID>> PersistableDataProvider<T, ID> of(SerializableSupplier<R> repository, SerializableSupplier<Specification<T>> specification) {
         return new PersistableDataProvider<T, ID>() {
             @Override
             public R getRepository() {
