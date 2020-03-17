@@ -1,5 +1,6 @@
 package com.bochkov.wicket.data.model.nonser;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.wicket.model.IModel;
@@ -8,8 +9,19 @@ import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class CollectionModel<T extends Persistable<ID>, ID extends Serializable, C extends Collection<T>> extends NonSerializableModel<Collection<ID>, C> {
+
+    public CollectionModel() {
+        super();
+        setObject(createResultCollection(ImmutableList.<T>of().iterator()));
+    }
+
+    public CollectionModel(Iterable<T> elements) {
+        super();
+        setObject(createResultCollection(elements.iterator()));
+    }
 
     public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, Collection<T>> of(SerializableFunction<ID, Optional<T>> entityLoader) {
         return new CollectionModel<T, ID, Collection<T>>() {
@@ -46,6 +58,20 @@ public abstract class CollectionModel<T extends Persistable<ID>, ID extends Seri
         };
     }
 
+    public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, List<T>> asList(SerializableFunction<ID, Optional<T>> entityLoader, Iterable<T> defaultValue) {
+        return new CollectionModel<T, ID, List<T>>(defaultValue) {
+            @Override
+            public Optional<T> toEntity(ID id) {
+                return Optional.ofNullable(id).map(entityLoader::apply).orElse(null);
+            }
+
+            @Override
+            public List<T> createResultCollection(Iterator<T> collection) {
+                return Lists.newArrayList(collection);
+            }
+        };
+    }
+
     public static <T extends Persistable<ID>, ID extends Serializable> CollectionModel<T, ID, Set<T>> asSet(SerializableFunction<ID, Optional<T>> entityLoader) {
         return new CollectionModel<T, ID, Set<T>>() {
             @Override
@@ -62,7 +88,8 @@ public abstract class CollectionModel<T extends Persistable<ID>, ID extends Seri
 
     @Override
     public Collection<ID> pack(C object) {
-        return Optional.ofNullable(object).map(Collection::stream).map(stream -> stream.filter(Objects::nonNull).map(this::toId).iterator()).map(Lists::newArrayList).orElse(null);
+        Collection<ID> result = Optional.ofNullable(object).map(Collection::stream).map(stream -> stream.filter(Objects::nonNull).map(this::toId).collect(Collectors.toList())).orElse(null);
+        return result;
     }
 
     @Override
