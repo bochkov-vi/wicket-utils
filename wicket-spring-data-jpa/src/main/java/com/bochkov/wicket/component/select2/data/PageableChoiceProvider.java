@@ -1,5 +1,6 @@
 package com.bochkov.wicket.component.select2.data;
 
+import org.danekja.java.util.function.serializable.SerializableFunction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -57,4 +58,27 @@ public abstract class PageableChoiceProvider<T> extends ChoiceProvider<T> {
     public int getPageSize() {
         return 10;
     }
+
+    public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, SerializableFunction<R, String> idStringer) {
+        PageableChoiceProvider<T> delegate = this;
+        return new PageableChoiceProvider<R>() {
+
+            @Override
+            public R toChoise(String id) {
+                return mapper.apply(delegate.toChoise(id));
+            }
+
+            @Override
+            public Page<R> findByMask(String term, Pageable pageRequest) {
+                return delegate.findByMask(term, pageRequest).map(mapper);
+            }
+
+            @Override
+            public String getIdValue(R object) {
+                return Optional.ofNullable(object).map(idStringer).orElse(null);
+            }
+        };
+    }
+
+    ;
 }

@@ -10,22 +10,15 @@ import org.danekja.java.util.function.serializable.SerializableFunction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.Specification;
 import org.wicketstuff.select2.Response;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * The type Maskable choice provider.
- *
- * @param <T>  the type parameter
- * @param <ID> the type parameter
- */
+
 @Accessors(chain = true)
-public abstract class MaskableChoiceProvider<T, ID extends Serializable> extends PageableChoiceProvider<T> implements Maskable {
+public abstract class MaskableChoiceProvider<T, ID> extends PageableChoiceProvider<T> implements Maskable {
 
     /**
      * The Masked properties.
@@ -34,7 +27,16 @@ public abstract class MaskableChoiceProvider<T, ID extends Serializable> extends
     @Setter
     Iterable<String> maskedProperties;
 
+    public MaskableChoiceProvider(Iterable<String> maskedProperties) {
+        this.maskedProperties = maskedProperties;
+    }
 
+    public MaskableChoiceProvider() {
+    }
+
+    public MaskableChoiceProvider(String... maskedProperties) {
+        this.maskedProperties = Lists.newArrayList(maskedProperties);
+    }
 
     @Override
     public String getDisplayValue(T object) {
@@ -58,6 +60,7 @@ public abstract class MaskableChoiceProvider<T, ID extends Serializable> extends
         Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties);
         return findAll(Optional.ofNullable(maskedSpecification).map(m -> m.and(excludeSpecification())).orElse(null), pageRequest);
     }
+
 
     /**
      * Find all page.
@@ -140,4 +143,31 @@ public abstract class MaskableChoiceProvider<T, ID extends Serializable> extends
      */
     public abstract Optional<? extends T> findById(ID id);
 
+    public static <T, ID> MaskableChoiceProvider<T, ID> of(SerializableFunction<T, String> toString,
+                                             SerializableBiFunction<Specification<T>, Pageable, Page<T>> pageLoader,
+                                             SerializableFunction<String, ID> toIdFunc,
+                                             SerializableFunction<ID, Optional<T>> entityLoader,
+                                             String... maskedProperty) {
+        return new MaskableChoiceProvider<T, ID>(maskedProperty) {
+            @Override
+            public String getIdValue(T object) {
+                return Optional.ofNullable(object).map(toString).orElse(null);
+            }
+
+            @Override
+            protected Page<T> findAll(Specification<T> specification, Pageable pageRequest) {
+                return pageLoader.apply(specification, pageRequest);
+            }
+
+            @Override
+            public ID toId(String str) {
+                return Optional.ofNullable(str).map(toIdFunc).orElse(null);
+            }
+
+            @Override
+            public Optional<? extends T> findById(ID id) {
+                return Optional.ofNullable(id).flatMap(entityLoader);
+            }
+        };
+    }
 }
