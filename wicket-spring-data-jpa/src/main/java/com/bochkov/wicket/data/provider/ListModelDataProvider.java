@@ -23,7 +23,6 @@ import org.apache.wicket.model.util.ListModel;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Stream;
 
 
@@ -42,7 +41,7 @@ public abstract class ListModelDataProvider<T> implements IDataProvider<T> {
     /**
      * reference to the list used as dataprovider for the dataview
      */
-    private final IModel<List<T>> list;
+    private final IModel<? extends Collection<T>> list;
 
     /**
      * Constructs an empty provider. Useful for lazy loading together with {@linkplain #getData()}
@@ -54,7 +53,7 @@ public abstract class ListModelDataProvider<T> implements IDataProvider<T> {
     /**
      * @param list the list used as dataprovider for the dataview
      */
-    public ListModelDataProvider(IModel<List<T>> list) {
+    public ListModelDataProvider(IModel<? extends Collection<T>> list) {
         if (list == null) {
             throw new IllegalArgumentException("argument [list] cannot be null");
         }
@@ -67,7 +66,7 @@ public abstract class ListModelDataProvider<T> implements IDataProvider<T> {
      *
      * @return The list
      */
-    protected IModel<List<T>> getData() {
+    protected IModel<? extends Collection<T>> getData() {
         return list;
     }
 

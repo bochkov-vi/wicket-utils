@@ -96,7 +96,7 @@ public abstract class WriteLoadableModel<T, ID extends Serializable> extends Rea
      */
     public WriteLoadableModel<T, ID> setId(ID id) {
         if (id != null) {
-            setObject(findById(id).get());
+            setObject(findById(id).orElse(null));
         }else{
             setObject(null);
         }
