@@ -20,6 +20,7 @@ import org.apache.wicket.model.IModel;
 import java.util.Set;
 
 @Accessors(chain = true)
+@Getter
 public class BootstrapModalPanel extends Panel {
 
     public static final String BODY_CONTENT_ID = "modal-body";
@@ -139,19 +140,19 @@ public class BootstrapModalPanel extends Panel {
     }
 
     public String jsCreate() {
-        return String.format("$('%s').modal(%s)", getMarkupId(), toJson());
+        return String.format("$('#%s').modal(%s)", getMarkupId(), toJson());
     }
 
     public String jsShow() {
-        return String.format("$('%s').modal('show')", getMarkupId(), toJson());
+        return String.format("$('#%s').modal('show')", getMarkupId(), toJson());
     }
 
     public String jsResize() {
-        return String.format("$('%s').modal('handleUpdate')", getMarkupId(), toJson());
+        return String.format("$('#%s').modal('handleUpdate')", getMarkupId(), toJson());
     }
 
     public String jsHide() {
-        return String.format("$('%s').modal('hide')", getMarkupId(), toJson());
+        return String.format("$('#%s').modal('hide')", getMarkupId(), toJson());
     }
 
     public enum Backdrop {

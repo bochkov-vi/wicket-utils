@@ -48,7 +48,7 @@ public class XLSXDataExporter extends AbstractDataExporter {
     }
 
     public XLSXDataExporter(DataTable table) {
-        this(Model.of("XLSX"));
+        this(Model.of("XLSX"),table);
         this.table = table;
     }
 

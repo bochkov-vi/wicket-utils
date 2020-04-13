@@ -46,6 +46,7 @@
             <groupId>org.webjars.npm</groupId>
             <artifactId>select2-bootstrap4-theme</artifactId>
             <version>1.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wicketstuff</groupId>
