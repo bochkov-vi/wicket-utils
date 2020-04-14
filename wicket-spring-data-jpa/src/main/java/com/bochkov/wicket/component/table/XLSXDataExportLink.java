@@ -36,7 +36,7 @@ public class XLSXDataExportLink extends ResourceLink<Void> {
      * @param fileName the file name
      */
     public XLSXDataExportLink(String id, DataTable table, String fileName) {
-        this(id, table, new XLSXDataExporter(), fileName);
+        this(id, table, new XLSXDataExporter(table), fileName);
     }
 
     /**
@@ -62,8 +62,8 @@ public class XLSXDataExportLink extends ResourceLink<Void> {
             }
         }.setFileName(fileName + "." + exporter.getFileNameExtension()));
 
-        setEscapeModelStrings(false);
-        setBody(Model.of("<span class='fa fa-file-excel-o'></span>"));
+       // setEscapeModelStrings(false);
+       // setBody(Model.of("<span class='fa fa-file-excel-o'></span>"));
         this.table = table;
     }
 

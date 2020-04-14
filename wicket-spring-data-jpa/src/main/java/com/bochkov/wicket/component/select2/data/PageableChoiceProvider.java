@@ -65,7 +65,7 @@ public abstract class PageableChoiceProvider<T> extends ChoiceProvider<T> {
 
             @Override
             public R toChoise(String id) {
-                return mapper.apply(delegate.toChoise(id));
+                return Optional.ofNullable(id).map(delegate::toChoise).map(mapper).orElse(null);
             }
 
             @Override
