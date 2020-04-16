@@ -72,15 +72,15 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
         };
     }
 
-    public static <T> MaskableChoiceProvider<T> of(Class<T> _class,
-                                                   SerializableBiFunction<Specification<T>, Pageable, Page<T>> pageLoader,
+    public static <T> MaskableChoiceProvider<T> of(Class<T> _class, SerializableBiFunction<Specification<T>, Pageable, Page<T>> pageLoader,
                                                    String... maskedProperty) {
-        return new MaskableChoiceProvider<T>(_class, maskedProperty) {
+        MaskableChoiceProvider<T> provider = new MaskableChoiceProvider<T>(_class, maskedProperty) {
             @Override
             protected Page<T> findAll(Specification<T> specification, Pageable pageRequest) {
                 return pageLoader.apply(specification, pageRequest);
             }
         };
+        return provider;
     }
 
     @Override
