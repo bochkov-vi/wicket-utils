@@ -31,6 +31,7 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
      */
     transient Long size = null;
 
+
     public static <T extends Persistable<ID>, ID extends Serializable, R extends JpaSpecificationExecutor<T> & CrudRepository<T, ID>> PersistableDataProvider<T, ID> of(SerializableSupplier<R> repository) {
         return new PersistableDataProvider<T, ID>() {
             @Override

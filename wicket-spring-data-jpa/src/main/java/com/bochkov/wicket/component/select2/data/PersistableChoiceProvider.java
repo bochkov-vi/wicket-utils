@@ -13,32 +13,31 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public abstract class PersistableChoiseProvider<T extends Persistable<ID>, ID> extends MaskableChoiceProvider<T, ID> {
+public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> extends MaskableChoiceProvider<T> {
 
-    public PersistableChoiseProvider(Iterable<String> maskedProperties) {
+    public PersistableChoiceProvider(Iterable<String> maskedProperties) {
         super(maskedProperties);
     }
 
-    public PersistableChoiseProvider() {
+    public PersistableChoiceProvider() {
     }
 
-    public PersistableChoiseProvider(String... maskedProperties) {
+    public PersistableChoiceProvider(String... maskedProperties) {
         super(maskedProperties);
     }
 
-    public static <T extends Persistable<ID>, ID, R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> PersistableChoiseProvider<T, ID>
+    public static <T extends Persistable<ID>, ID, R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> PersistableChoiceProvider<T, ID>
     of(SerializableSupplier<R> repositorySupplier,
        SerializableFunction<ID, String> toString,
        SerializableFunction<String, ID> toIdFunc,
        String... maskedProperty) {
-        return new PersistableChoiseProvider<T, ID>(maskedProperty) {
+        return new PersistableChoiceProvider<T, ID>(maskedProperty) {
 
             @Override
             public String idToString(ID object) {
                 return Optional.ofNullable(object).map(toString).orElse(null);
             }
 
-            @Override
             public ID toId(String str) {
                 return Optional.ofNullable(str).map(toIdFunc).orElse(null);
             }
@@ -50,19 +49,19 @@ public abstract class PersistableChoiseProvider<T extends Persistable<ID>, ID> e
         };
     }
 
-    public static <T extends Persistable<Integer>, R extends JpaSpecificationExecutor<T> & JpaRepository<T, Integer>> PersistableChoiseProvider<T, Integer>
+    public static <T extends Persistable<Integer>, R extends JpaSpecificationExecutor<T> & JpaRepository<T, Integer>> PersistableChoiceProvider<T, Integer>
     ofIntId(SerializableSupplier<R> repositorySupplier,
             String... maskedProperty) {
         return of(repositorySupplier, String::valueOf, Ints::tryParse, maskedProperty);
     }
 
-    public static <T extends Persistable<Long>, R extends JpaSpecificationExecutor<T> & JpaRepository<T, Long>> PersistableChoiseProvider<T, Long>
+    public static <T extends Persistable<Long>, R extends JpaSpecificationExecutor<T> & JpaRepository<T, Long>> PersistableChoiceProvider<T, Long>
     ofLongId(SerializableSupplier<R> repositorySupplier,
              String... maskedProperty) {
         return of(repositorySupplier, String::valueOf, id -> Optional.of(id).map(Ints::tryParse).map(Number::longValue).orElse(null), maskedProperty);
     }
 
-    public static <T extends Persistable<LocalDate>, R extends JpaSpecificationExecutor<T> & JpaRepository<T, LocalDate>> PersistableChoiseProvider<T, LocalDate>
+    public static <T extends Persistable<LocalDate>, R extends JpaSpecificationExecutor<T> & JpaRepository<T, LocalDate>> PersistableChoiceProvider<T, LocalDate>
     ofLocalDateId(SerializableSupplier<R> repositorySupplier,
                   String... maskedProperty) {
         return of(repositorySupplier, Object::toString, id -> Optional.of(id).map(s -> {
@@ -87,10 +86,17 @@ public abstract class PersistableChoiseProvider<T extends Persistable<ID>, ID> e
 
     public abstract String idToString(ID id);
 
-    @Override
+
     public Optional<? extends T> findById(ID id) {
         return getRepository().findById(id);
     }
+
+    @Override
+    public final T toChoise(String id) {
+        return Optional.ofNullable(id).map(this::toId).flatMap(pk -> getRepository().findById(pk)).orElse(null);
+    }
+
+    public abstract ID toId(String str);
 
     public abstract <R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> R getRepository();
 }
