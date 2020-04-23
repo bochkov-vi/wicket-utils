@@ -27,6 +27,10 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
     @Setter
     Iterable<String> maskedProperties;
 
+    @Getter
+    @Setter
+    Specification<T> advancedSpecification;
+
     public MaskableChoiceProvider(Iterable<String> maskedProperties) {
         this.maskedProperties = maskedProperties;
     }
@@ -46,7 +50,6 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
     public MaskableChoiceProvider(Class<T> _class, String... maskedProperties) {
         this(_class, Lists.newArrayList(maskedProperties));
     }
-
 
     public static <T> MaskableChoiceProvider<T> of(Class<T> _class,
                                                    SerializableFunction<T, String> toString,
@@ -83,6 +86,7 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
         return provider;
     }
 
+
     @Override
     public String getDisplayValue(T object) {
         return Optional.ofNullable(object).map(T::toString).orElse("");
@@ -100,7 +104,10 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
     public Page<T> findByMask(String term, Pageable pageRequest) {
         String expression = Optional.ofNullable(term).filter(s -> !Strings.isNullOrEmpty(s)).orElse("%");
         Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties);
-        return findAll(Optional.ofNullable(maskedSpecification).map(m -> m.and(excludeSpecification())).orElse(null), pageRequest);
+        return findAll(Optional.ofNullable(maskedSpecification)
+                .map(m -> m.and(excludeSpecification()))
+                .map(m -> m.and(advancedSpecification))
+                .orElse(null), pageRequest);
     }
 
    /* @Override
