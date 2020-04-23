@@ -1,6 +1,8 @@
 package com.bochkov.wicket.component.select2.data;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.util.convert.ConversionException;
+import org.apache.wicket.util.convert.IConverter;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -33,12 +35,23 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
 
     @Override
     public T toChoise(String id) {
-        return Application.get().getConverterLocator().getConverter(_class).convertToObject(id, null);
+        return convertToObject(id);
     }
 
     @Override
     public String getIdValue(T object) {
-        return Application.get().getConverterLocator().getConverter(_class).convertToString(object, null);
+        return convertToString(object);
     }
 
+    public T convertToObject(String value) throws ConversionException {
+        return getConverter().convertToObject(value, null);
+    }
+
+    public String convertToString(T value) {
+        return getConverter().convertToString(value, null);
+    }
+
+    public IConverter<T> getConverter() {
+        return Application.get().getConverterLocator().getConverter(_class);
+    }
 }
