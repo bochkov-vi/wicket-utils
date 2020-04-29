@@ -6,7 +6,9 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
 import org.apache.wicket.extensions.markup.html.repeater.util.SingleSortState;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
+import org.apache.wicket.model.IModel;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
@@ -16,6 +18,13 @@ public abstract class SortedListModelDataProvider<T> extends ListModelDataProvid
 
     private static final long serialVersionUID = 1L;
     private final SingleSortState<String> state = new SingleSortState<>();
+
+    public SortedListModelDataProvider() {
+    }
+
+    public SortedListModelDataProvider(IModel<? extends Collection<T>> list) {
+        super(list);
+    }
 
     @Override
     public Iterator<T> iterator(final long first, final long count) {
