@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * @param <T>
  * @author Igor Vaynberg ( ivaynberg )
  */
-public abstract class ListModelDataProvider<T> implements IDataProvider<T> {
+public abstract class ListModelDataProvider<T> implements IDataProvider<T>{
 
     private static final long serialVersionUID = 1L;
 
