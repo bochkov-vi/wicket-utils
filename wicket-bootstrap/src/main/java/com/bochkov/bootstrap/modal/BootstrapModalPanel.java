@@ -1,6 +1,7 @@
 package com.bochkov.bootstrap.modal;
 
 import com.github.openjson.JSONObject;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,9 +16,14 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.AbstractRepeater;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.danekja.java.util.function.serializable.SerializableFunction;
 
+import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 @Accessors(chain = true)
 @Getter
@@ -25,33 +31,29 @@ public class BootstrapModalPanel extends Panel {
 
     public static final String BODY_CONTENT_ID = "modal-body";
 
-    MarkupContainer modalDialog = new WebMarkupContainer("modal-dialog");
+    public List<SerializableFunction<String, Component>> bottomButtons = Lists.newArrayList();
 
+    MarkupContainer modalDialog = new WebMarkupContainer("modal-dialog");
 
     MarkupContainer footer = createFooter("modal-footer");
 
     Label headerLabel = new Label("header-label");
-
+    Label btnCancelLabel = new Label("btn-cancel", Model.of("Cancel"));
     @Getter
     @Setter
     private Boolean show = false;
-
     @Getter
     @Setter
     private Boolean fade = true;
-
     @Getter
     @Setter
     private Boolean focus = true;
-
     @Getter
     @Setter
     private Boolean keyboard = true;
-
     @Getter
     @Setter
     private Backdrop backdrop = Backdrop.TRUE;
-
     @Getter
     @Setter
     private Size size = Size.Default;
@@ -59,7 +61,6 @@ public class BootstrapModalPanel extends Panel {
     public BootstrapModalPanel(String id) {
         super(id);
     }
-
 
     @Override
     protected void onInitialize() {
@@ -71,8 +72,9 @@ public class BootstrapModalPanel extends Panel {
             @Override
             protected Set<String> update(Set<String> oldClasses) {
                 oldClasses.add("modal");
-                if (fade)
+                if (fade) {
                     oldClasses.add("fade");
+                }
                 return oldClasses;
             }
         });
@@ -82,6 +84,12 @@ public class BootstrapModalPanel extends Panel {
         add(new AttributeAppender("role", "dialog"));
         add(new AttributeAppender("aria-labelledby", headerLabel.getMarkupId()));
         add(new AttributeAppender("aria-hidden", "true"));
+        RepeatingView buttons = new RepeatingView("buttons");
+        add(buttons);
+        for (Function<String, Component> btnCreate : bottomButtons) {
+            buttons.add(btnCreate.apply(buttons.newChildId()));
+        }
+        footer.add(btnCancelLabel, buttons);
     }
 
     @Override
@@ -101,6 +109,7 @@ public class BootstrapModalPanel extends Panel {
 
         component.setOutputMarkupPlaceholderTag(true);
         component.setVisible(false);
+        getPage().remove(component);
         replace(component);
         show = false;
         return this;
@@ -123,6 +132,7 @@ public class BootstrapModalPanel extends Panel {
 
     public void show(AjaxRequestTarget target) {
         target.appendJavaScript(jsShow());
+        target.add(this);
     }
 
     public void show(AjaxRequestTarget target, Component component) {
@@ -155,6 +165,12 @@ public class BootstrapModalPanel extends Panel {
         return String.format("$('#%s').modal('hide')", getMarkupId(), toJson());
     }
 
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+        super.onComponentTag(tag);
+        checkComponentTag(tag, "div");
+    }
+
     public enum Backdrop {
         TRUE, FALSE, STATIC
     }
@@ -184,10 +200,5 @@ public class BootstrapModalPanel extends Panel {
         }
     }
 
-    @Override
-    protected void onComponentTag(ComponentTag tag) {
-        super.onComponentTag(tag);
-        checkComponentTag(tag, "div");
-    }
 
 }
