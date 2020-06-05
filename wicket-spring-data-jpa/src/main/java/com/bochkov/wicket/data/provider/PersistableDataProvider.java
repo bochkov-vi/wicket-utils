@@ -55,6 +55,25 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
         };
     }
 
+    public static <T extends Persistable<ID>, ID extends Serializable, R extends JpaSpecificationExecutor<T> & CrudRepository<T, ID>> PersistableDataProvider<T, ID> of(SerializableSupplier<R> repository, SerializableSupplier<Specification<T>> specification, SerializableSupplier<Sort> sort) {
+        return new PersistableDataProvider<T, ID>() {
+            @Override
+            public R getRepository() {
+                return repository.get();
+            }
+
+            @Override
+            public Specification<T> createSpecification() {
+                return specification.get();
+            }
+
+            @Override
+            protected Sort getSort(SingleSortState<String> sortState) {
+                return Sort.unsorted().and(sort.get()).and(super.getSort(sortState));
+            }
+        };
+    }
+
 
     @Override
     public Iterator<? extends T> iterator(long first, long count) {
