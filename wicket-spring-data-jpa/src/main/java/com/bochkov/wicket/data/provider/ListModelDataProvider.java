@@ -20,6 +20,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.util.ListModel;
+import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,7 +35,7 @@ import java.util.stream.Stream;
  * @param <T>
  * @author Igor Vaynberg ( ivaynberg )
  */
-public abstract class ListModelDataProvider<T> implements IDataProvider<T>{
+public abstract class ListModelDataProvider<T> implements IDataProvider<T> {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,6 +60,15 @@ public abstract class ListModelDataProvider<T> implements IDataProvider<T>{
         }
 
         this.list = list;
+    }
+
+    public static <T> ListModelDataProvider<T> of(IModel<Collection<T>> model, SerializableFunction<T, IModel<T>> modelCreator) {
+        return new ListModelDataProvider<T>(model) {
+            @Override
+            public IModel<T> model(T object) {
+                return modelCreator.apply(object);
+            }
+        };
     }
 
     /**
