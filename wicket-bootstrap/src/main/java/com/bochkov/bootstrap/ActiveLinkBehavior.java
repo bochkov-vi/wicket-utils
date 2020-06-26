@@ -46,6 +46,15 @@ public abstract class ActiveLinkBehavior<C extends Component> extends Behavior {
     }
 
 
+    public static ActiveLinkBehavior<BookmarkablePageLink> of() {
+        return new ActiveLinkBehavior<BookmarkablePageLink>() {
+            @Override
+            public boolean isActive(BookmarkablePageLink link) {
+                return link.getPageClass().isAssignableFrom(link.getPage().getPageClass());
+            }
+        };
+    }
+
     /**
      * Of active link behavior.
      *
