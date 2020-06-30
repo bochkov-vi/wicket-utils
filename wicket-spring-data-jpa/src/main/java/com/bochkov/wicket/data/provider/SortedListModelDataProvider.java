@@ -7,6 +7,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDat
 import org.apache.wicket.extensions.markup.html.repeater.util.SingleSortState;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.model.IModel;
+import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,6 +25,15 @@ public abstract class SortedListModelDataProvider<T> extends ListModelDataProvid
 
     public SortedListModelDataProvider(IModel<? extends Collection<T>> list) {
         super(list);
+    }
+
+    public static <T, C extends Collection<T>> SortedListModelDataProvider<T> of(IModel<C> model, SerializableFunction<T, IModel<T>> modelCreator) {
+        return new SortedListModelDataProvider<T>(model) {
+            @Override
+            public IModel<T> model(T object) {
+                return modelCreator.apply(object);
+            }
+        };
     }
 
     @Override
@@ -74,5 +84,4 @@ public abstract class SortedListModelDataProvider<T> extends ListModelDataProvid
     public void setSort(final String property, final SortOrder order) {
         state.setPropertySortOrder(property, order);
     }
-
 }

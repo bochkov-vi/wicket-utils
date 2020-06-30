@@ -6,6 +6,7 @@ import de.agilecoders.wicket.webjars.request.resource.WebjarsJavaScriptResourceR
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.HeaderItem;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.wicketstuff.select2.ApplicationSettings;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class Select2ApplicationExtension /*implements WicketApplicationInitConfi
 
     public static void install(WebApplication webApplication) {
         ApplicationSettings.get().setJavaScriptReference(new WebjarsJavaScriptResourceReference("resources/webjars/select2/current/js/select2.full.js"));
-        ApplicationSettings.get().setCssReference(new WebjarsCssResourceReference("resources/webjars/select2/current/css/select2.css"));
-        ApplicationSettings.get().setCssReference(new WebjarsCssResourceReference("resources/webjars/select2-bootstrap4-theme/current/dist/select2-bootstrap4.min.css") {
+        //ApplicationSettings.get().setCssReference(new WebjarsCssResourceReference("resources/webjars/select2/current/css/select2.css"));
+        ApplicationSettings.get().setCssReference(new PackageResourceReference(Select2ApplicationExtension.class, "select2-bootstrap4.min.css") {
             @Override
             public List<HeaderItem> getDependencies() {
                 return Lists.newArrayList(CssHeaderItem.forReference(new WebjarsCssResourceReference("resources/webjars/select2/current/css/select2.css")));

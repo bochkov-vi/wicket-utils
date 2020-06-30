@@ -62,7 +62,16 @@ public abstract class ListModelDataProvider<T> implements IDataProvider<T> {
         this.list = list;
     }
 
-    public static <T> ListModelDataProvider<T> of(IModel<Collection<T>> model, SerializableFunction<T, IModel<T>> modelCreator) {
+    /*public static <T> ListModelDataProvider<T> of(IModel<Collection<T>> model, SerializableFunction<T, IModel<T>> modelCreator) {
+        return new ListModelDataProvider<T>(model) {
+            @Override
+            public IModel<T> model(T object) {
+                return modelCreator.apply(object);
+            }
+        };
+    }*/
+
+    public static <T, C extends Collection<T>> ListModelDataProvider<T> of(IModel<C> model, SerializableFunction<T, IModel<T>> modelCreator) {
         return new ListModelDataProvider<T>(model) {
             @Override
             public IModel<T> model(T object) {

@@ -86,5 +86,6 @@ public class SortableListMapModelDataProvider<T extends Map<String, Object>> ext
     public int compare(Map<String, Object> r1, Map<String, Object> r2, String property,boolean asc) {
         return compare(r1.get(property), r2.get(property),asc);
     }
+
 }
 
