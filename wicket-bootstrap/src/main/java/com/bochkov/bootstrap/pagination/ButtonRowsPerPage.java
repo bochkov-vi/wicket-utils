@@ -5,6 +5,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.navigation.paging.IPageable;
+import org.apache.wicket.markup.html.navigation.paging.IPageableItems;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -24,7 +26,7 @@ public class ButtonRowsPerPage extends Panel {
     /**
      * The Table.
      */
-    DataTable table;
+    IPageableItems table;
 
     /**
      * Instantiates a new Button rows per page.
@@ -33,7 +35,7 @@ public class ButtonRowsPerPage extends Panel {
      * @param table       the table
      * @param rowsPerPage the rows per page
      */
-    public ButtonRowsPerPage(String id, DataTable table, Long... rowsPerPage) {
+    public ButtonRowsPerPage(String id, IPageableItems table, Long... rowsPerPage) {
         super(id);
         this.table = table;
         this.rowsPerpage = rowsPerPage;

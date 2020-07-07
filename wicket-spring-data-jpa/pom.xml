@@ -56,12 +56,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>github-com-ttskch-select2-bootstrap4-theme</artifactId>
-            <version>1.0.4</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>wicketstuff-select2</artifactId>
             <version>${wicket.version}</version>

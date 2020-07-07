@@ -9,6 +9,8 @@ import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.navigation.paging.IPageable;
+import org.apache.wicket.markup.html.navigation.paging.IPageableItems;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -25,7 +27,7 @@ public class BootstrapPaginationPanel extends Panel {
     /**
      * The Table.
      */
-    DataTable table;
+    IPageableItems table;
 
     ButtonRowsPerPage buttonRowsPerPage;
 
@@ -40,7 +42,7 @@ public class BootstrapPaginationPanel extends Panel {
      * @param id    the id
      * @param table the table
      */
-    public BootstrapPaginationPanel(String id, DataTable table, Long... perPage) {
+    public BootstrapPaginationPanel(String id, IPageableItems table, Long... perPage) {
         super(id);
         this.table = table;
         buttonRowsPerPage = new ButtonRowsPerPage("rows-per-page", table, perPage);
