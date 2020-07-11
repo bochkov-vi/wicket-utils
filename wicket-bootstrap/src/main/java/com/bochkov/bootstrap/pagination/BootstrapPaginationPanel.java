@@ -1,6 +1,7 @@
 package com.bochkov.bootstrap.pagination;
 
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import org.apache.wicket.ClassAttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
@@ -9,7 +10,6 @@ import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.navigation.paging.IPageable;
 import org.apache.wicket.markup.html.navigation.paging.IPageableItems;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -27,6 +27,7 @@ public class BootstrapPaginationPanel extends Panel {
     /**
      * The Table.
      */
+    @Getter
     IPageableItems table;
 
     ButtonRowsPerPage buttonRowsPerPage;
