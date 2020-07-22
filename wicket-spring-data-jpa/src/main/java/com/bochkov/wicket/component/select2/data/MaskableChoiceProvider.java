@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.wicketstuff.select2.Response;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 
@@ -133,25 +133,6 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
         return Optional.ofNullable(id).map(this::toId).flatMap(this::findById).orElse(null);
     }*/
 
-    /**
-     * Gets masked properties.
-     *
-     * @return the masked properties
-     */
-    public Iterable<String> getMaskedProperties() {
-        return maskedProperties;
-    }
-
-    /**
-     * Sets masked properties.
-     *
-     * @param maskedProperties the masked properties
-     * @return the masked properties
-     */
-    public MaskableChoiceProvider<T> setMaskedProperties(Iterable<String> maskedProperties) {
-        this.maskedProperties = maskedProperties;
-        return this;
-    }
 
     /**
      * To id id.
@@ -166,7 +147,7 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
      *
      * @return the list
      */
-    public List<T> excludes() {
+    public Collection<T> excludes() {
         return null;
     }
 
@@ -176,8 +157,8 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
      * @return the specification
      */
     protected Specification<T> excludeSpecification() {
-        List<T> excludes = excludes();
-        if (excludes != null) {
+        Collection<T> excludes = excludes();
+        if (excludes != null && !excludes.isEmpty()) {
             return ((root, q, b) -> b.not(root.in(excludes)));
         }
         return null;
