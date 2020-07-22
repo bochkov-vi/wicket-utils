@@ -17,9 +17,7 @@ import java.util.List;
 /**
  * The type Bootstrap behavior.
  */
-public class BootstrapBehavior extends Behavior {
-
-    public static ResourceReference CSS = new WebjarsCssResourceReference("bootstrap/current/css/bootstrap.min.css");
+public class BootstrapBehavior extends BootstrapCssBehavior {
 
     public static ResourceReference JS = new WebjarsCssResourceReference("bootstrap/current/js/bootstrap.min.js") {
         @Override
@@ -31,11 +29,9 @@ public class BootstrapBehavior extends Behavior {
         }
     };
 
-
     @Override
     public void renderHead(Component component, IHeaderResponse response) {
         super.renderHead(component, response);
-        response.render(JavaScriptHeaderItem.forReference(JS));
-        response.render(CssHeaderItem.forReference(CSS));
+        response.render(JavaScriptHeaderItem.forReference(BootstrapBehavior.JS));
     }
 }
