@@ -22,11 +22,15 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
     }
 
     public Class<T> getGeneric() {
+        return getGeneric(0);
+    }
+
+    public Class<T> getGeneric(int i) {
         Class<T> persistentClass = null;
         try {
             persistentClass = (Class<T>)
                     ((ParameterizedType) getClass().getGenericSuperclass())
-                            .getActualTypeArguments()[0];
+                            .getActualTypeArguments()[i];
         } catch (Exception e) {
 
         }

@@ -1,6 +1,8 @@
 package com.bochkov.wicket.component.select2.data;
 
 import com.google.common.primitives.Ints;
+import org.apache.wicket.Application;
+import org.apache.wicket.Session;
 import org.danekja.java.util.function.serializable.SerializableFunction;
 import org.danekja.java.util.function.serializable.SerializableSupplier;
 import org.springframework.data.domain.Page;
@@ -15,15 +17,20 @@ import java.util.Optional;
 
 public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> extends MaskableChoiceProvider<T> {
 
+    protected Class<ID> idClass;
+
     public PersistableChoiceProvider(Iterable<String> maskedProperties) {
         super(maskedProperties);
+        idClass = (Class<ID>) getGeneric(1);
     }
 
     public PersistableChoiceProvider() {
+        idClass = (Class<ID>) getGeneric(1);
     }
 
     public PersistableChoiceProvider(String... maskedProperties) {
         super(maskedProperties);
+        idClass = (Class<ID>) getGeneric(1);
     }
 
     public static <T extends Persistable<ID>, ID, R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> PersistableChoiceProvider<T, ID>
@@ -84,7 +91,9 @@ public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> e
         return Optional.ofNullable(object).map(Persistable::getId).map(this::idToString).orElse(null);
     }
 
-    public abstract String idToString(ID id);
+    public String idToString(ID id) {
+        return Optional.ofNullable(id).map(pk -> Application.get().getConverterLocator().getConverter(idClass).convertToString(pk, Session.get().getLocale())).orElse(null);
+    }
 
 
     public Optional<? extends T> findById(ID id) {
@@ -96,7 +105,10 @@ public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> e
         return Optional.ofNullable(id).map(this::toId).flatMap(pk -> getRepository().findById(pk)).orElse(null);
     }
 
-    public abstract ID toId(String str);
+    public ID toId(String str) {
+        return Optional.ofNullable(str).map(v -> Application.get().getConverterLocator().getConverter(idClass).convertToObject(v, Session.get().getLocale())).orElse(null);
+
+    }
 
     public abstract <R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> R getRepository();
 }

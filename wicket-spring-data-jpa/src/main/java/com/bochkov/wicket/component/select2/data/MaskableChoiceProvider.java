@@ -103,11 +103,16 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
 
     public Page<T> findByMask(String term, Pageable pageRequest) {
         String expression = Optional.ofNullable(term).filter(s -> !Strings.isNullOrEmpty(s)).orElse("%");
-        Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties);
+        Specification<T> maskedSpecification = createMaskSpecification(expression, maskedProperties);
         return findAll(Optional.ofNullable(maskedSpecification)
                 .map(m -> m.and(excludeSpecification()))
                 .map(m -> m.and(advancedSpecification))
                 .orElse(null), pageRequest);
+    }
+
+    public Specification<T> createMaskSpecification(final String expression, final Iterable<String> maskedPoperties) {
+        Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties);
+        return maskedSpecification;
     }
 
    /* @Override
