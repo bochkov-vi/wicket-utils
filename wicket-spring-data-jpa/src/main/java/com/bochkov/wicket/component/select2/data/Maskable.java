@@ -47,8 +47,8 @@ public interface Maskable {
                 } else {
                     orders = ImmutableList.copyOf(query.getOrderList());
                 }
-                Expression locate = cb.locate(maskedProperty, mask);
-                orders = ImmutableList.<Order>builder().add(cb.asc(locate), cb.asc(cb.length(maskedProperty)), cb.asc(maskedProperty)).addAll(orders).build();
+                Expression locate = cb.locate(maskedProperty.as(String.class), Optional.ofNullable(mask).orElse(""));
+                orders = ImmutableList.<Order>builder().add(cb.asc(locate), cb.asc(cb.length(maskedProperty.as(String.class))), cb.asc(maskedProperty)).addAll(orders).build();
                 query.orderBy(orders);
             }
             return result;
