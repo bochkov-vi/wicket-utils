@@ -5,6 +5,7 @@ import org.danekja.java.util.function.serializable.SerializableBiFunction;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public interface Maskable {
 
     static SerializableBiFunction<Root, String, Path> DEFAULT_PROPERTY_EXTRACTOR = (root, maskedPopertyName) -> {
         Path maskedProperty = fetchNestedPath(root, maskedPopertyName);
-        ;
+
         return maskedProperty;
     };
 
@@ -68,12 +69,20 @@ public interface Maskable {
         Path<T> result = null;
         for (String field : fields) {
             if (result == null) {
-                result = root.get(field);
+                result = toPath(root, field);
             } else {
-                result = result.get(field);
+                result = toPath(result, field);
             }
         }
         return result;
+    }
+
+    static Path toPath(Path root, String fieldName) {
+        if (root instanceof From && Collection.class.isAssignableFrom(root.get(fieldName).getJavaType())) {
+            return ((From) root).join(fieldName, JoinType.LEFT);
+        } else {
+            return root.get(fieldName);
+        }
     }
 
     /**
