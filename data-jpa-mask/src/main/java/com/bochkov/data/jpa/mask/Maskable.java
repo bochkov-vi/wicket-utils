@@ -1,4 +1,4 @@
-package com.bochkov.wicket.component.select2.data;
+package com.bochkov.data.jpa.mask;
 
 import com.google.common.collect.ImmutableList;
 import org.danekja.java.util.function.serializable.SerializableBiFunction;

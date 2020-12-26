@@ -1,5 +1,6 @@
 package com.bochkov.wicket.component.select2.data;
 
+import com.bochkov.data.jpa.mask.Maskable;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import lombok.Getter;

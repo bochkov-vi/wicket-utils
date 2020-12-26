@@ -14,7 +14,11 @@
     </parent>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.bochkov</groupId>
+            <artifactId>data-jpa-mask</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
