@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.wicketstuff.select2.Response;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -111,8 +113,17 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
     }
 
     public Specification<T> createMaskSpecification(final String expression, final Iterable<String> maskedPoperties) {
-        Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties);
+        Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties, new SerializableBiFunction<Root, String, Path>() {
+            @Override
+            public Path apply(Root root, String s) {
+                return createPathForProperty(root, s);
+            }
+        });
         return maskedSpecification;
+    }
+
+    public Path createPathForProperty(final Root<T> root, final String expression) {
+        return Maskable.fetchNestedPath(root, expression);
     }
 
    /* @Override
