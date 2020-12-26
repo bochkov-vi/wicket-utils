@@ -1,6 +1,7 @@
 package com.bochkov.wicket.component.select2.data;
 
 import com.google.common.collect.ImmutableList;
+import org.danekja.java.util.function.serializable.SerializableBiFunction;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -14,20 +15,6 @@ public interface Maskable {
 
 
     /**
-     * String mask expression predicate.
-     *
-     * @param mask           the mask
-     * @param maskedProperty the masked property
-     * @param query          the query
-     * @param cb             the cb
-     * @return the predicate
-     */
-    static Predicate stringMaskExpression(String mask, Expression maskedProperty, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        mask = Optional.ofNullable(mask).orElse("%");
-        return cb.like(cb.lower(maskedProperty.as(String.class)), Optional.of(mask).map(String::trim).map(String::toLowerCase).map(s -> "%" + s + "%").orElse(null));
-    }
-
-    /**
      * Mask specification specification.
      *
      * @param <T>               the type parameter
@@ -35,11 +22,24 @@ public interface Maskable {
      * @param maskedPopertyName the masked poperty name
      * @return the specification
      */
-    static public <T> Specification<T> maskSpecification(final String mask, final String maskedPopertyName) {
+
+    static SerializableBiFunction<Root, String, Path> DEFAULT_PROPERTY_EXTRACTOR = (root, maskedPopertyName) -> {
+        Path maskedProperty = fetchNestedPath(root, maskedPopertyName);
+        ;
+        return maskedProperty;
+    };
+
+
+    static Predicate stringMaskExpression(String mask, Expression maskedProperty, CriteriaBuilder cb) {
+        mask = Optional.ofNullable(mask).orElse("%");
+        return cb.like(cb.lower(maskedProperty.as(String.class)), Optional.of(mask).map(String::trim).map(String::toLowerCase).map(s -> "%" + s + "%").orElse(null));
+    }
+
+    static public <T> Specification<T> maskSpecification(final String mask, final String maskedPopertyName, final SerializableBiFunction<Root, String, Path> propertyExtractor) {
         return (root, query, cb) -> {
             Predicate result;
-            Path maskedProperty = fetchNestedPath(root, maskedPopertyName);
-            result = stringMaskExpression(mask, maskedProperty, query, cb);
+            Path maskedProperty = propertyExtractor.apply(root, maskedPopertyName);
+            result = stringMaskExpression(mask, maskedProperty, cb);
             if (result != null) {
                 List<Order> orders;
                 if (query.getOrderList() == null) {
@@ -85,9 +85,13 @@ public interface Maskable {
      * @return the specification
      */
     static <T> Specification<T> maskSpecification(final String mask, final Iterable<String> maskedPoperties) {
+        return maskSpecification(mask, maskedPoperties, DEFAULT_PROPERTY_EXTRACTOR);
+    }
+
+    static <T> Specification<T> maskSpecification(final String mask, final Iterable<String> maskedPoperties, final SerializableBiFunction<Root, String, Path> propertyExtractor) {
         Specification<T> where = null;
         for (String p : maskedPoperties) {
-            Specification<T> spec = maskSpecification(mask, p);
+            Specification<T> spec = maskSpecification(mask, p, propertyExtractor);
             if (where == null) {
                 where = Specification.where(spec);
             } else {
