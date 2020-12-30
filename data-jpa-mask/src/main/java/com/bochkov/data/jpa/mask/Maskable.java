@@ -5,7 +5,6 @@ import org.danekja.java.util.function.serializable.SerializableBiFunction;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,11 +77,12 @@ public interface Maskable {
     }
 
     static Path toPath(Path root, String fieldName) {
-        if (root instanceof From && Collection.class.isAssignableFrom(root.get(fieldName).getJavaType())) {
+        try {
             return ((From) root).join(fieldName, JoinType.LEFT);
-        } else {
-            return root.get(fieldName);
+        } catch (Exception ignored) {
         }
+        return root.get(fieldName);
+
     }
 
     /**
