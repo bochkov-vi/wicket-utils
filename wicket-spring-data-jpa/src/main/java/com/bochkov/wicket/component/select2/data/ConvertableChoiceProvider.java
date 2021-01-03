@@ -1,6 +1,7 @@
 package com.bochkov.wicket.component.select2.data;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.Session;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
 
@@ -48,11 +49,11 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
     }
 
     public T convertToObject(String value) throws ConversionException {
-        return getConverter().convertToObject(value, null);
+        return getConverter().convertToObject(value, Session.get().getLocale());
     }
 
     public String convertToString(T value) {
-        return getConverter().convertToString(value, null);
+        return getConverter().convertToString(value, Session.get().getLocale());
     }
 
     public IConverter<T> getConverter() {
