@@ -38,6 +38,8 @@ public class TempusdominusBehavior extends TempusdominusResources implements ITe
 
     Temporal maxDate;
 
+    Integer stepping;
+
     AbstractTextComponent textComponent;
 
     String tempusdominusId;
@@ -77,6 +79,7 @@ public class TempusdominusBehavior extends TempusdominusResources implements ITe
                 .put("date", new JSONFunction(String.format("moment(\"%s\",moment().toMomentFormatString(\"%s\"))", textComponent.getValue(), format)))
                 .put("useStrict", useStrict)
                 .put("useCurrent", useCurrent)
+                .put("stepping", stepping)
                 ;
     }
 
