@@ -73,4 +73,8 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
     public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, SerializableSupplier<IConverter<R>> converterSupplier) {
         return super.map(mapper, r -> converterSupplier.get().convertToString(r, Session.get().getLocale()));
     }
+
+    public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, SerializableSupplier<IConverter<R>> converterSupplier, SerializableFunction<T, String> dispaly, SerializableFunction<R, T> inverseConverter) {
+        return super.map(mapper, r -> converterSupplier.get().convertToString(r, Session.get().getLocale()), dispaly, inverseConverter);
+    }
 }

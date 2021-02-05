@@ -60,6 +60,14 @@ public abstract class PageableChoiceProvider<T> extends ChoiceProvider<T> {
     }
 
     public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, SerializableFunction<R, String> idStringer) {
+        return map(mapper, idStringer, String::valueOf);
+    }
+
+    public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, SerializableFunction<R, String> idStringer, SerializableFunction<T, String> dispaly, SerializableFunction<R, T> inverseConverter) {
+        return map(mapper, idStringer, r -> dispaly.apply(inverseConverter.apply(r)));
+    }
+
+    public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, SerializableFunction<R, String> idStringer, SerializableFunction<R, String> dispaly) {
         PageableChoiceProvider<T> delegate = this;
         return new PageableChoiceProvider<R>() {
 
@@ -76,6 +84,11 @@ public abstract class PageableChoiceProvider<T> extends ChoiceProvider<T> {
             @Override
             public String getIdValue(R object) {
                 return Optional.ofNullable(object).map(idStringer).orElse(null);
+            }
+
+            @Override
+            public String getDisplayValue(R object) {
+                return Optional.ofNullable(object).map(dispaly).orElse(null);
             }
         };
     }

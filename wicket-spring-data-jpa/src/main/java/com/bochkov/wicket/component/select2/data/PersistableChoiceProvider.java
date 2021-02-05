@@ -1,6 +1,5 @@
 package com.bochkov.wicket.component.select2.data;
 
-import com.google.common.primitives.Ints;
 import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.danekja.java.util.function.serializable.SerializableFunction;
@@ -12,7 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> extends MaskableChoiceProvider<T> {
@@ -98,6 +96,10 @@ public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> e
     public abstract <R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> R getRepository();
 
     public PageableChoiceProvider<ID> map() {
-        return super.map(Persistable::getId, () -> getConverter(idClass));
+        return map(String::valueOf);
+    }
+
+    public PageableChoiceProvider<ID> map(SerializableFunction<T, String> display) {
+        return super.map(Persistable::getId, () -> getConverter(idClass), display, id -> findById(id).orElse(null));
     }
 }
