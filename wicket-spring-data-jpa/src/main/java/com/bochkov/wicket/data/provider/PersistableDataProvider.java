@@ -69,7 +69,7 @@ public abstract class PersistableDataProvider<T extends Persistable<ID>, ID exte
 
             @Override
             protected Sort getSort(SingleSortState<String> sortState) {
-                return Sort.unsorted().and(sort.get()).and(super.getSort(sortState));
+                return Sort.unsorted().and(Optional.ofNullable(super.getSort(sortState)).orElseGet(Sort::unsorted)).and(Optional.ofNullable(sort.get()).orElseGet(Sort::unsorted));
             }
         };
     }

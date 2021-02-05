@@ -1,5 +1,6 @@
 package com.bochkov.wicket.component.table;
 
+import org.apache.commons.compress.utils.Lists;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.export.ExportToolbar;
@@ -107,7 +108,7 @@ public class XLSXDataExportLink extends ResourceLink<Void> {
         private <T, S> void exportData(DataTable<T, S> dataTable, IDataExporter dataExporter, OutputStream outputStream)
                 throws IOException {
             IDataProvider<T> dataProvider = dataTable.getDataProvider();
-            List<IExportableColumn<T, ?>> exportableColumns = new LinkedList<>();
+            List<IExportableColumn<T, ?>> exportableColumns = Lists.newArrayList();
             for (IColumn<T, S> col : dataTable.getColumns()) {
                 if (col instanceof IExportableColumn) {
                     exportableColumns.add((IExportableColumn<T, ?>) col);

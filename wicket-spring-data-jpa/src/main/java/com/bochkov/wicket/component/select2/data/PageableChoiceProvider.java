@@ -79,6 +79,4 @@ public abstract class PageableChoiceProvider<T> extends ChoiceProvider<T> {
             }
         };
     }
-
-    ;
 }

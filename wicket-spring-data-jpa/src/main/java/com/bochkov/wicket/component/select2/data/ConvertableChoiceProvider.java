@@ -4,6 +4,8 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
+import org.danekja.java.util.function.serializable.SerializableFunction;
+import org.danekja.java.util.function.serializable.SerializableSupplier;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -57,6 +59,18 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
     }
 
     public IConverter<T> getConverter() {
+        return getConverter(_class);
+    }
+
+    public <C> IConverter<C> getConverter(Class<C> _class) {
         return Application.get().getConverterLocator().getConverter(_class);
+    }
+
+    public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, Class<R> _class) {
+        return super.map(mapper, r -> getConverter(_class).convertToString(r, Session.get().getLocale()));
+    }
+
+    public <R> PageableChoiceProvider<R> map(SerializableFunction<T, R> mapper, SerializableSupplier<IConverter<R>> converterSupplier) {
+        return super.map(mapper, r -> converterSupplier.get().convertToString(r, Session.get().getLocale()));
     }
 }
