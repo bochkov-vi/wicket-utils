@@ -1,12 +1,14 @@
 package com.bochkov.data.jpa.mask;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.danekja.java.util.function.serializable.SerializableBiFunction;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The interface Maskable.
@@ -38,6 +40,7 @@ public interface Maskable {
     static public <T> Specification<T> maskSpecification(final String mask, final String maskedPopertyName, final SerializableBiFunction<Root, String, Path> propertyExtractor) {
         return (root, query, cb) -> {
             Predicate result;
+            query.distinct(true);
             Path maskedProperty = propertyExtractor.apply(root, maskedPopertyName);
             result = stringMaskExpression(mask, maskedProperty, cb);
             if (result != null) {
@@ -48,7 +51,8 @@ public interface Maskable {
                     orders = ImmutableList.copyOf(query.getOrderList());
                 }
                 Expression locate = cb.locate(maskedProperty.as(String.class), Optional.ofNullable(mask).orElse(""));
-                orders = ImmutableList.<Order>builder().add(cb.asc(locate), cb.asc(cb.length(maskedProperty.as(String.class))), cb.asc(maskedProperty)).addAll(orders).build();
+                List<Expression> expressionToOrder = Lists.newArrayList(locate, cb.length(maskedProperty.as(String.class)), maskedProperty);
+                orders = expressionToOrder.stream().map(ex -> cb.asc(ex)).collect(Collectors.toList());
                 query.orderBy(orders);
             }
             return result;
@@ -77,11 +81,13 @@ public interface Maskable {
     }
 
     static Path toPath(Path root, String fieldName) {
+        Path result = null;
+        result = root.get(fieldName);
         try {
-            return ((From) root).join(fieldName, JoinType.LEFT);
+            result = ((From) root).join(fieldName, JoinType.LEFT);
         } catch (Exception ignored) {
         }
-        return root.get(fieldName);
+        return result;
 
     }
 

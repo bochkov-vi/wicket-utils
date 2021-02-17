@@ -4,15 +4,17 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
+import org.checkerframework.checker.units.qual.A;
 import org.danekja.java.util.function.serializable.SerializableFunction;
 import org.danekja.java.util.function.serializable.SerializableSupplier;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 
 public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvider<T> {
 
-    Class<T> _class;
+    private Class<T> _class;
 
     public ConvertableChoiceProvider(Class<T> _class) {
         super();
@@ -28,18 +30,23 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
         return getGeneric(0);
     }
 
-    public Class<T> getGeneric(int i) {
-        Class<T> persistentClass = null;
-        try {
-            persistentClass = (Class<T>)
-                    ((ParameterizedType) getClass().getGenericSuperclass())
-                            .getActualTypeArguments()[i];
-        } catch (Exception e) {
-
-        }
-        return persistentClass;
+    public Class<T> getGeneric(int index) {
+       return (Class<T>) getGenericClassType(index);
     }
+    private Type getGenericClassType(int index) {
+        // To make it use generics without supplying the class type
+        Type type = getClass().getGenericSuperclass();
 
+        while (!(type instanceof ParameterizedType)) {
+            if (type instanceof ParameterizedType) {
+                type = ((Class<?>) ((ParameterizedType) type).getRawType()).getGenericSuperclass();
+            } else {
+                type = ((Class<?>) type).getGenericSuperclass();
+            }
+        }
+
+        return ((ParameterizedType) type).getActualTypeArguments()[index];
+    }
     @Override
     public T toChoise(String id) {
         return convertToObject(id);

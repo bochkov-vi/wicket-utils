@@ -35,10 +35,12 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
     Specification<T> advancedSpecification;
 
     public MaskableChoiceProvider(Iterable<String> maskedProperties) {
+        super();
         this.maskedProperties = maskedProperties;
     }
 
     public MaskableChoiceProvider() {
+        super();
     }
 
     public MaskableChoiceProvider(Class<T> _class, Iterable<String> maskedProperties) {

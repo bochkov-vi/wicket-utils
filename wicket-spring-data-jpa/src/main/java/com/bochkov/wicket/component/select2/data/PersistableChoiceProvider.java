@@ -17,52 +17,41 @@ public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> e
 
     protected Class<ID> idClass;
 
-    public PersistableChoiceProvider(Iterable<String> maskedProperties) {
+    public PersistableChoiceProvider(Class<ID> idClass, Iterable<String> maskedProperties) {
         super(maskedProperties);
-        idClass = (Class<ID>) getGeneric(1);
+        this.idClass = idClass;
     }
 
-    public PersistableChoiceProvider() {
-        idClass = (Class<ID>) getGeneric(1);
+    public PersistableChoiceProvider(Class<ID> idClass) {
+        this.idClass = idClass;
     }
 
-    public PersistableChoiceProvider(String... maskedProperties) {
-        super(maskedProperties);
-        idClass = (Class<ID>) getGeneric(1);
+    public PersistableChoiceProvider(Class<T> _class, Class<ID> idClass, Iterable<String> maskedProperties) {
+        super(_class, maskedProperties);
+        this.idClass = idClass;
     }
+
+    public PersistableChoiceProvider(Class<ID> idClass, String... maskedProperties) {
+        super(maskedProperties);
+        this.idClass = idClass;
+    }
+
+    public PersistableChoiceProvider(Class<T> _class, Class<ID> idClass, String... maskedProperties) {
+        super(_class, maskedProperties);
+        this.idClass = idClass;
+    }
+
 
     public static <T extends Persistable<ID>, ID, R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> PersistableChoiceProvider<T, ID>
-    of(SerializableSupplier<R> repositorySupplier,
-       SerializableFunction<ID, String> toString,
-       SerializableFunction<String, ID> toIdFunc,
+    of(Class<T> _class, Class<ID> idClass, SerializableSupplier<R> repositorySupplier,
        String... maskedProperty) {
-        return new PersistableChoiceProvider<T, ID>(maskedProperty) {
-
-            @Override
-            public String idToString(ID object) {
-                return Optional.ofNullable(object).map(toString).orElse(null);
-            }
-
-            public ID toId(String str) {
-                return Optional.ofNullable(str).map(toIdFunc).orElse(null);
-            }
-
+        PersistableChoiceProvider<T, ID> provider = new PersistableChoiceProvider<T, ID>(_class, idClass, maskedProperty) {
             @Override
             public R getRepository() {
                 return repositorySupplier.get();
             }
         };
-    }
-
-    public static <T extends Persistable<ID>, ID, R extends JpaSpecificationExecutor<T> & JpaRepository<T, ID>> PersistableChoiceProvider<T, ID>
-    of(SerializableSupplier<R> repositorySupplier,
-       String... maskedProperty) {
-        return new PersistableChoiceProvider<T, ID>(maskedProperty) {
-            @Override
-            public R getRepository() {
-                return repositorySupplier.get();
-            }
-        };
+        return provider;
     }
 
     @Override
@@ -89,7 +78,7 @@ public abstract class PersistableChoiceProvider<T extends Persistable<ID>, ID> e
     }
 
     public ID toId(String str) {
-        return Optional.ofNullable(str).map(v -> Application.get().getConverterLocator().getConverter(idClass).convertToObject(v, Session.get().getLocale())).orElse(null);
+        return Optional.ofNullable(str).map(v -> getConverter(idClass).convertToObject(v, Session.get().getLocale())).orElse(null);
 
     }
 
