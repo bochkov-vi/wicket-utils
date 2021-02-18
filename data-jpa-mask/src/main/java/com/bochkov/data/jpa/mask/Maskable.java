@@ -2,6 +2,7 @@ package com.bochkov.data.jpa.mask;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 import org.danekja.java.util.function.serializable.SerializableBiFunction;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -40,19 +41,16 @@ public interface Maskable {
     static public <T> Specification<T> maskSpecification(final String mask, final String maskedPopertyName, final SerializableBiFunction<Root, String, Path> propertyExtractor) {
         return (root, query, cb) -> {
             Predicate result;
-            query.distinct(true);
             Path maskedProperty = propertyExtractor.apply(root, maskedPopertyName);
             result = stringMaskExpression(mask, maskedProperty, cb);
             if (result != null) {
-                List<Order> orders;
-                if (query.getOrderList() == null) {
+                List<Order> orders = query.getOrderList();
+                if (orders == null) {
                     orders = ImmutableList.of();
-                } else {
-                    orders = ImmutableList.copyOf(query.getOrderList());
                 }
                 Expression locate = cb.locate(maskedProperty.as(String.class), Optional.ofNullable(mask).orElse(""));
                 List<Expression> expressionToOrder = Lists.newArrayList(locate, cb.length(maskedProperty.as(String.class)), maskedProperty);
-                orders = expressionToOrder.stream().map(ex -> cb.asc(ex)).collect(Collectors.toList());
+                orders = Streams.concat(orders.stream(), expressionToOrder.stream().map(ex -> cb.asc(ex))).collect(Collectors.toList());
                 query.orderBy(orders);
             }
             return result;
