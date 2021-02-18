@@ -58,7 +58,7 @@ public class MaskableProperty<T> {
                 if (!propertyPath.getLeafProperty().isCollection()) {
                     Expression property = toExpression(propertyPath, r, b);
                     appendOrders(q, b, property, like);
-                    predicate = like(property, like, b);
+                    predicate = like(property.as(String.class), like, b);
                 } else {
                     Subquery<?> sq = q.subquery(r.getJavaType());
                     Root sr = sq.from(r.getJavaType());
