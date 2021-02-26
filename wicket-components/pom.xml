@@ -3,8 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.bochkov</groupId>
 
-    <artifactId>wicket-spring-data-jpa</artifactId>
+    <artifactId>wicket-components</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
     <parent>
@@ -16,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>com.bochkov</groupId>
-            <artifactId>data-jpa-mask</artifactId>
+            <artifactId>spring-data-jpa-findbymask</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

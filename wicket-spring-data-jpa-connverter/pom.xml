@@ -19,11 +19,12 @@
         <dependency>
             <groupId>com.bochkov</groupId>
             <artifactId>wicket-spring-data-jpa-model</artifactId>
-            <scope>provided</scope>
+
         </dependency>
         <dependency>
             <groupId>com.giffing.wicket.spring.boot.starter</groupId>
             <artifactId>wicket-spring-boot-starter</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
