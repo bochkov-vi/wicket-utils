@@ -1,4 +1,4 @@
-package com.bochkov.wicket.component.select2;
+package com.bochkov.wicket.select2;
 
 import de.agilecoders.wicket.webjars.request.resource.WebjarsJavaScriptResourceReference;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;

@@ -219,9 +219,9 @@ public class XLSXDataExporter extends AbstractDataExporter {
     }
 
     /**
-     * Gets converter locator.
+     * Gets com.bochkov.wicket.jpa.converter locator.
      *
-     * @return the converter locator
+     * @return the com.bochkov.wicket.jpa.converter locator
      */
     protected IConverterLocator getConverterLocator() {
         return Application.get().getConverterLocator();

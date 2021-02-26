@@ -1,4 +1,4 @@
-package com.bochkov.wicket.component.select2;
+package com.bochkov.wicket.select2;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;

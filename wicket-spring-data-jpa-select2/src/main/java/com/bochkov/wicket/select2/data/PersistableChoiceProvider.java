@@ -1,4 +1,4 @@
-package com.bochkov.wicket.component.select2.data;
+package com.bochkov.wicket.select2.data;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Session;

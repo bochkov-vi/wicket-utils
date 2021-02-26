@@ -1,10 +1,9 @@
-package com.bochkov.wicket.component.select2.data;
+package com.bochkov.wicket.select2.data;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
-import org.checkerframework.checker.units.qual.A;
 import org.danekja.java.util.function.serializable.SerializableFunction;
 import org.danekja.java.util.function.serializable.SerializableSupplier;
 

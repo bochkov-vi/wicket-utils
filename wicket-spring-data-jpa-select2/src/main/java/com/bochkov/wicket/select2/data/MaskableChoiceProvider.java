@@ -1,4 +1,4 @@
-package com.bochkov.wicket.component.select2.data;
+package com.bochkov.wicket.select2.data;
 
 import com.bochkov.data.jpa.mask.Maskable;
 import com.google.common.base.Strings;
@@ -125,7 +125,7 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
         return maskedSpecification;
     }
 
-    public Path createPathForProperty(final Root<T> root, final String expression) {
+    public Path<T> createPathForProperty(final Root<T> root, final String expression) {
         return Maskable.fetchNestedPath(root, expression);
     }
 
