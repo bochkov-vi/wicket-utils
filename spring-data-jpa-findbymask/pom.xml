@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>data-jpa-mask</artifactId>
+    <artifactId>spring-data-jpa-findbymask</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
