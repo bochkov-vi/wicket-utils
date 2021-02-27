@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:border>
+    <div wicket:id="container" class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 wicket:id="header" class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form wicket:id="form">
+                    <wicket:body></wicket:body>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button wicket:id="btn-delete" type="button" class="btn btn-danger">
+                    <span class="fa fa-trash"/>
+                    <wicket:message key="delete"/>
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <span class="fa fa-close"/>
+                    <wicket:message key="close"/>
+                </button>
+            </div>
+        </div>
+    </div>
+</wicket:border>
+</body>
+</html>

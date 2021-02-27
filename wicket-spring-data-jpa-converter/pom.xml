@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wicket-spring-data-jpa-connverter</artifactId>
+    <artifactId>wicket-spring-data-jpa-converter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -19,7 +19,6 @@
         <dependency>
             <groupId>com.bochkov</groupId>
             <artifactId>wicket-spring-data-jpa-model</artifactId>
-
         </dependency>
         <dependency>
             <groupId>com.giffing.wicket.spring.boot.starter</groupId>

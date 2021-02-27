@@ -13,8 +13,9 @@
         <module>wicket-spring-data-jpa-model</module>
         <module>wicket-bootstrap</module>
         <module>spring-data-jpa-findbymask</module>
-        <module>wicket-spring-data-jpa-connverter</module>
+        <module>wicket-spring-data-jpa-converter</module>
         <module>wicket-spring-data-jpa-select2</module>
+        <module>wicket-spring-data-jpa-crud</module>
     </modules>
     <properties>
         <wicket.version>8.7.0</wicket.version>
@@ -25,6 +26,7 @@
     </properties>
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>javax.persistence</groupId>
                 <artifactId>javax.persistence-api</artifactId>
@@ -73,7 +75,12 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <version>${project.version}</version>
-                <artifactId>wicket-spring-data-jpa-connverter</artifactId>
+                <artifactId>wicket-spring-data-jpa-converter</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <version>${project.version}</version>
+                <artifactId>wicket-components</artifactId>
             </dependency>
         </dependencies>
     </dependencyManagement>
