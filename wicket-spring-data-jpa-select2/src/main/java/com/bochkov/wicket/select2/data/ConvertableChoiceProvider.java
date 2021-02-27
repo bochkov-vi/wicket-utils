@@ -30,8 +30,9 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
     }
 
     public Class<T> getGeneric(int index) {
-       return (Class<T>) getGenericClassType(index);
+        return (Class<T>) getGenericClassType(index);
     }
+
     private Type getGenericClassType(int index) {
         // To make it use generics without supplying the class type
         Type type = getClass().getGenericSuperclass();
@@ -46,6 +47,7 @@ public abstract class ConvertableChoiceProvider<T> extends PageableChoiceProvide
 
         return ((ParameterizedType) type).getActualTypeArguments()[index];
     }
+
     @Override
     public T toChoise(String id) {
         return convertToObject(id);

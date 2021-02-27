@@ -1,6 +1,7 @@
 package com.bochkov.wicket.select2.data;
 
 import com.bochkov.data.jpa.mask.Maskable;
+import com.bochkov.data.jpa.mask.MaskableProperty;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
      */
     @Getter
     @Setter
-    Iterable<String> maskedProperties;
+    Collection<String> maskedProperties;
 
     @Getter
     @Setter
@@ -36,7 +37,7 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
 
     public MaskableChoiceProvider(Iterable<String> maskedProperties) {
         super();
-        this.maskedProperties = maskedProperties;
+        this.maskedProperties = Lists.newArrayList(maskedProperties);
     }
 
     public MaskableChoiceProvider() {
@@ -45,7 +46,7 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
 
     public MaskableChoiceProvider(Class<T> _class, Iterable<String> maskedProperties) {
         super(_class);
-        this.maskedProperties = maskedProperties;
+        this.maskedProperties = Lists.newArrayList(maskedProperties);
     }
 
     public MaskableChoiceProvider(String... maskedProperties) {
@@ -115,13 +116,8 @@ public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvide
                 .orElse(null), pageRequest);
     }
 
-    public Specification<T> createMaskSpecification(final String expression, final Iterable<String> maskedPoperties) {
-        Specification<T> maskedSpecification = Maskable.maskSpecification(expression, maskedProperties, new SerializableBiFunction<Root, String, Path>() {
-            @Override
-            public Path apply(Root root, String s) {
-                return createPathForProperty(root, s);
-            }
-        });
+    public Specification<T> createMaskSpecification(final String expression, final Collection<String> maskedPoperties) {
+        Specification<T> maskedSpecification = MaskableProperty.maskSpecification(expression, maskedProperties);
         return maskedSpecification;
     }
 
