@@ -6,9 +6,7 @@ import com.bochkov.wicket.jpa.model.PersistableModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.wicket.ClassAttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.Page;
+import org.apache.wicket.*;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -16,11 +14,11 @@ import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IModelComparator;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.danekja.java.util.function.serializable.SerializableConsumer;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.data.domain.Persistable;
@@ -32,12 +30,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 @Accessors(chain = true)
-public abstract class CrudPage<T, ENTITY extends Persistable<ID>, ID extends Serializable> extends BasePage<T> {
+public abstract class CrudPanel<T, ENTITY extends Persistable<ID>, ID extends Serializable> extends GenericPanel<T> {
 
-
-    @Getter
-    @Setter
-    protected Page backPage;
+    public static MetaDataKey<Page> BACKPAGE = new MetaDataKey<Page>() {
+    };
 
     @Getter
     @Setter
@@ -55,7 +51,7 @@ public abstract class CrudPage<T, ENTITY extends Persistable<ID>, ID extends Ser
     protected DeletePanel<ENTITY, ID> deletePanel = new DeletePanel<ENTITY, ID>("deleted-panel") {
         @Override
         public void onDelete(AjaxRequestTarget target, IModel model) {
-            CrudPage.this.onDelete(target, model);
+            CrudPanel.this.onDelete(target, model);
         }
     };
 
@@ -66,28 +62,40 @@ public abstract class CrudPage<T, ENTITY extends Persistable<ID>, ID extends Ser
     Consumer<Optional<AjaxRequestTarget>> onBack = new SerializableConsumer<Optional<AjaxRequestTarget>>() {
         @Override
         public void accept(Optional<AjaxRequestTarget> ajaxRequestTarget) {
-            if (backPage != null) {
-                setResponsePage(backPage);
+            if (getBackPage() != null) {
+                setResponsePage(getBackPage());
             }
         }
     };
 
-    public CrudPage(Class<ENTITY> entityClass) {
-        super();
+    public CrudPanel(String id, Class<ENTITY> entityClass) {
+        super(id);
         this.entityClass = entityClass;
         log = org.slf4j.LoggerFactory.getLogger(this.getClass());
     }
 
-    public CrudPage(Class<ENTITY> entityClass, IModel<T> model) {
-        super(model);
+    public CrudPanel(String id, Class<ENTITY> entityClass, IModel<T> model) {
+        super(id, model);
         this.entityClass = entityClass;
         log = org.slf4j.LoggerFactory.getLogger(this.getClass());
     }
 
-    public CrudPage(Class<ENTITY> entityClass, PageParameters parameters) {
-        super(parameters);
-        this.entityClass = entityClass;
-        log = org.slf4j.LoggerFactory.getLogger(this.getClass());
+    public static Page setBackPageMeta(Page backPage, Page targetPage) {
+        targetPage.setMetaData(BACKPAGE, backPage);
+        return targetPage;
+    }
+
+    public static Page getBackPageMeta(Page targetPage) {
+        return targetPage.getMetaData(BACKPAGE);
+    }
+
+    public Page getBackPage() {
+        return getBackPageMeta(getPage());
+    }
+
+    public CrudPanel<T, ENTITY, ID> setBackPage(Page backPage) {
+        setBackPageMeta(backPage, getPage());
+        return this;
     }
 
     protected abstract <R extends CrudRepository<ENTITY, ID>> R getRepository();
@@ -159,7 +167,7 @@ public abstract class CrudPage<T, ENTITY extends Persistable<ID>, ID extends Ser
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                this.setVisible(backPage != null);
+                this.setVisible(getBackPage() != null);
             }
         };
     }
@@ -175,7 +183,7 @@ public abstract class CrudPage<T, ENTITY extends Persistable<ID>, ID extends Ser
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                this.setVisible(backPage != null);
+                this.setVisible(getBackPage() != null);
             }
         };
     }
@@ -248,5 +256,9 @@ public abstract class CrudPage<T, ENTITY extends Persistable<ID>, ID extends Ser
 
     public void addOnBack(Consumer<Optional<AjaxRequestTarget>> consumer) {
         this.onBack = onBack.andThen(consumer);
+    }
+
+    public Optional<ENTITY> getEntityFromPageParam() {
+        return Optional.ofNullable(getPage().getPageParameters().get(0).toOptionalString()).map(str -> getConverter(entityClass).convertToObject(str, Session.get().getLocale()));
     }
 }

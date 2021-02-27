@@ -5,10 +5,7 @@ import com.bochkov.wicket.data.model.nonser.CollectionModel;
 import com.bochkov.wicket.data.provider.PersistableDataProvider;
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import org.apache.wicket.ClassAttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.Session;
-import org.apache.wicket.StyleAttributeModifier;
+import org.apache.wicket.*;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -32,7 +29,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-public abstract class CrudTablePage<T extends Persistable<ID>, ID extends Serializable> extends CrudPage<Collection<T>, T, ID> {
+public abstract class CrudTablePanel<T extends Persistable<ID>, ID extends Serializable> extends CrudPanel<Collection<T>, T, ID> {
 
 
     WebMarkupContainer container = new WebMarkupContainer("container");
@@ -49,16 +46,12 @@ public abstract class CrudTablePage<T extends Persistable<ID>, ID extends Serial
     @Getter
     private IModel<String> exportFileName;
 
-    public CrudTablePage(Class<T> tClass) {
-        super(tClass);
+    public CrudTablePanel(String id, Class<T> tClass) {
+        super(id, tClass);
     }
 
-    public CrudTablePage(Class<T> tClass, IModel<Collection<T>> model) {
-        super(tClass, model);
-    }
-
-    public CrudTablePage(Class<T> tClass, PageParameters parameters) {
-        super(tClass, parameters);
+    public CrudTablePanel(String id, Class<T> tClass, IModel<Collection<T>> model) {
+        super(id, tClass, model);
     }
 
     @Override
@@ -68,12 +61,12 @@ public abstract class CrudTablePage<T extends Persistable<ID>, ID extends Serial
             setModel(CollectionModel.of(id -> getRepository().findById(id)));
         }
         scrollToAnchorBehavior = new ScrollToAnchorBehavior(entityClass);
-        exportFileName = new ResourceModel("exportFileName").wrapOnAssignment(getPage());
+        exportFileName = new ResourceModel("exportFileName").wrapOnAssignment(this);
         table = new EntityDataTable<T, ID>("table", columns(), provider()) {
 
             @Override
             public void onRowCreated(Item<T> row, String id, int index, IModel<T> model) {
-                CrudTablePage.this.onRowCreated(table, row, id, index, model);
+                CrudTablePanel.this.onRowCreated(table, row, id, index, model);
                 /*row.add(new ClassAttributeModifier() {
                     @Override
                     protected Set<String> update(Set<String> oldClasses) {
@@ -87,7 +80,7 @@ public abstract class CrudTablePage<T extends Persistable<ID>, ID extends Serial
                 row.add(new StyleAttributeModifier() {
                     @Override
                     protected Map<String, String> update(Map<String, String> oldStyles) {
-                        if (model.combineWith(CrudTablePage.this.getModel(), (e, collection) -> collection.contains(e)).getObject()) {
+                        if (model.combineWith(CrudTablePanel.this.getModel(), (e, collection) -> collection.contains(e)).getObject()) {
                             oldStyles.put("box-shadow", "0 0 30px #44f");
                         }
                         return oldStyles;
@@ -212,38 +205,38 @@ public abstract class CrudTablePage<T extends Persistable<ID>, ID extends Serial
     }
 
     public void onEdit(Optional<AjaxRequestTarget> target, IModel<T> model) {
-        CrudEditPage<T, ID> page = createEditPage(model);
+        Page page = createEditPage(model);
         setModelObject(Lists.newArrayList(model.getObject()));
         setResponsePage(page);
     }
 
 
     public void onAddRow(Optional<AjaxRequestTarget> target) {
-        setResponsePage(createEditPage().setBackPage(this));
+        setResponsePage(setBackPageMeta(getPage(), createEditPage()));
     }
 
-    public abstract Class<? extends CrudEditPage<T, ID>> getEditPageClass();
+    public abstract Class<? extends Page> getEditPageClass();
 
-    final private CrudEditPage<T, ID> createEditPage(IModel<T> model) {
+    protected Page createEditPage(IModel<T> model) {
 
-        Class<? extends CrudEditPage<T, ID>> clazz = getEditPageClass();
-        CrudEditPage<T, ID> page = null;
+        Class<? extends Page> clazz = getEditPageClass();
+        Page editPage = null;
         try {
             PageParameters pageParameters = pageParametersForModel(model);
-            Constructor<? extends CrudEditPage<T, ID>> constructor = null;
+            Constructor<? extends Page> constructor = null;
             constructor = clazz.getConstructor(PageParameters.class);
-            page = BeanUtils.instantiateClass(constructor, pageParameters);
+            editPage = BeanUtils.instantiateClass(constructor, pageParameters);
         } catch (NoSuchMethodException e) {
-            page = createEditPage();
-            page.setModel(model);
+            editPage = createEditPage();
+            editPage.setDefaultModel(model);
         }
-        page.setBackPage(this);
+        setBackPageMeta(getPage(), editPage);
         scrollToAnchorBehavior.setAnchor(model);
-        return page;
+        return editPage;
     }
 
-    private CrudEditPage<T, ID> createEditPage() {
-        CrudEditPage<T, ID> page = BeanUtils.instantiateClass(getEditPageClass());
+    private Page createEditPage() {
+        Page page = BeanUtils.instantiateClass(getEditPageClass());
         return page;
     }
 

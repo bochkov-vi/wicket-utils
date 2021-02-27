@@ -1,12 +1,13 @@
 package com.bochkov.wicket.jpa.crud;
 
 import com.bochkov.wicket.jpa.model.PersistableModel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.FluentPropertyBeanIntrospector;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +21,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IModelComparator;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.danekja.java.util.function.serializable.SerializableSupplier;
 import org.springframework.beans.BeanUtils;
@@ -33,7 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 @Accessors(chain = true)
-public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Serializable> extends CrudPage<T, T, ID> {
+public abstract class CrudEditPanel<T extends Persistable<ID>, ID extends Serializable> extends CrudPanel<T, T, ID> {
 
     static {
         PropertyUtils.addBeanIntrospector(new FluentPropertyBeanIntrospector());
@@ -52,22 +52,17 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
 
     Form<T> form = new Form<>("form");
 
+    @Getter
+    @Setter
+    SerializableSupplier<T> entityInstanceCreator = this::newEntityInstance;
 
-    public CrudEditPage(Class<T> entityClass, PageParameters parameters) {
-        super(entityClass, parameters);
-        T entity = getConverter(getEntityClass()).convertToObject(parameters.get(0).toOptionalString(), Session.get().getLocale());
-        setModel(createModelForNewRow());
-        if (entity != null) {
-            setModelObject(entity);
-        }
+    public CrudEditPanel(String id, Class<T> entityClass) {
+        super(id, entityClass);
+
     }
 
-    public CrudEditPage(Class<T> entityClass, IModel<T> model) {
-        super(entityClass, model);
-    }
-
-    public CrudEditPage(Class<T> entityClass) {
-        super(entityClass);
+    public CrudEditPanel(String id, Class<T> entityClass, IModel<T> model) {
+        super(id, entityClass, model);
     }
 
 
@@ -85,12 +80,12 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
         return new AjaxButton(id) {
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
-                onSave(Optional.of(target), CrudEditPage.this.getModel());
+                onSave(Optional.of(target), CrudEditPanel.this.getModel());
             }
 
             @Override
             protected void onError(AjaxRequestTarget target) {
-                onSaveError(Optional.of(target), CrudEditPage.this.getModel());
+                onSaveError(Optional.of(target), CrudEditPanel.this.getModel());
             }
         };
     }
@@ -99,7 +94,7 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
         return new Button(id) {
             @Override
             public void onSubmit() {
-                onSave(Optional.empty(), CrudEditPage.this.getModel());
+                onSave(Optional.empty(), CrudEditPanel.this.getModel());
             }
         };
     }
@@ -137,8 +132,8 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
     }
 
     public void onAfterSave(Optional<AjaxRequestTarget> target, IModel<T> model) {
-        if (backPage != null) {
-            setResponsePage(backPage);
+        if (getBackPage() != null) {
+            setResponsePage(getBackPage());
         }
     }
 
@@ -148,37 +143,47 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
     }
 
     public void onClone(Optional<AjaxRequestTarget> target, IModel<T> model) {
-        IModel<T> newModel = createModelForNewRow(() -> {
+        ID id = model.map(Persistable::getId).getObject();
+        SerializableSupplier<T> entityCreator = () -> {
             T clone = newEntityInstance();
-            T src = model.getObject();
-            copyDataForClone(src, clone);
+            Optional.ofNullable(id).flatMap(getRepository()::findById).ifPresent(original -> copyDataForClone(original, clone));
             return clone;
-        });
-        CrudEditPage<T, ID> editPage = BeanUtils.instantiateClass(getClass());
-        editPage.setModel(newModel);
-        editPage.setResponsePage(getPage());
-        editPage.setBackPage(this);
+        };
+
         if (target.isPresent()) {
-            target.get().add(editPage);
+            setModelObject(null);
+            setEntityInstanceCreator(entityCreator);
+            target.get().add(this);
         } else {
+            IModel<T> newModel = createModelForNewRow(entityCreator);
+            Page editPage = BeanUtils.instantiateClass(getPage().getClass());
+            editPage.setDefaultModel(newModel);
+            setBackPageMeta(getPage(), editPage);
             setResponsePage(editPage);
         }
 
     }
 
     public void onAddRow(Optional<AjaxRequestTarget> target) {
-        CrudEditPage<T, ID> page = BeanUtils.instantiateClass(this.getClass());
-        page.setBackPage(getBackPage());
+        Page page = BeanUtils.instantiateClass(getPage().getClass());
+        setBackPageMeta(getPage(), page);
         setResponsePage(page);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
+        setOutputMarkupId(true);
         IModel<T> model = getModel();
+        if (model == null) {
+            model = (IModel<T>) getPage().getDefaultModel();
+            setModel(model);
+        }
         if (model == null) {
             setModel(createModelForNewRow());
         }
+        getEntityFromPageParam().ifPresent(this::setModelObject);
+
         form.setModel(new CompoundPropertyModel<>(getModel()));
         Button saveButton = createSaveButton("btn-save");
         form.add(saveButton);
@@ -207,11 +212,12 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
     }
 
     final protected IModel<T> createModelForNewRow() {
-        return createModelForNewRow(this::newEntityInstance);
+        IModel<T> model = PersistableModel.of(id -> getRepository().findById(id), () -> this.entityInstanceCreator.get());
+        return model;
     }
 
     final protected IModel<T> createModelForNewRow(SerializableSupplier<T> newInstanceCreator) {
-        IModel<T> model = PersistableModel.of(getRepository()::findById, newInstanceCreator);
+        IModel<T> model = PersistableModel.of(id -> getRepository().findById(id), newInstanceCreator);
         return model;
     }
 
@@ -222,7 +228,7 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
         } else {
             button = createSimpleCloneButton(id, model);
         }
-
+        button.add(new DisabledAttributeBehavior());
         return button;
     }
 
@@ -240,7 +246,7 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
         AbstractLink button = new AjaxLink<T>(id, model) {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                onClone(Optional.of(target), CrudEditPage.this.getModel());
+                onClone(Optional.of(target), CrudEditPanel.this.getModel());
             }
 
             @Override
@@ -266,7 +272,7 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
 
             @Override
             public void onClick() {
-                onClone(Optional.empty(), CrudEditPage.this.getModel());
+                onClone(Optional.empty(), CrudEditPanel.this.getModel());
             }
         };
         button.setVisible(false).setEnabled(false);
@@ -303,8 +309,8 @@ public abstract class CrudEditPage<T extends Persistable<ID>, ID extends Seriali
     @Override
     public void onAfterDelete(AjaxRequestTarget target) {
         super.onAfterDelete(target);
-        if (backPage != null) {
-            setResponsePage(backPage);
+        if (getBackPage() != null) {
+            setResponsePage(getBackPage());
         }
     }
 

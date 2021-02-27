@@ -46,6 +46,10 @@ public abstract class PersistableModel<T extends Persistable<ID>, ID extends Ser
         return model;
     }
 
+    @Override
+    protected T load() {
+        return Optional.ofNullable(key).flatMap(this::unpack).orElseGet(this::ifNullGet);
+    }
 
     @Override
     public Optional<ID> pack(T entity) {
