@@ -22,7 +22,7 @@ import java.util.Optional;
 
 
 @Accessors(chain = true)
-public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvider<T> implements Maskable {
+public abstract class MaskableChoiceProvider<T> extends ConvertableChoiceProvider<T>  {
 
     /**
      * The Masked properties.
