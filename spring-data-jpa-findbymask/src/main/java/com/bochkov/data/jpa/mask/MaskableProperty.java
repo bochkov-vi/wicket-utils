@@ -72,12 +72,12 @@ public class MaskableProperty<T> {
         };
     }
 
-    public Predicate like(Expression<String> expression, String like, CriteriaBuilder cb) {
-        return cb.like(expression, like(like));
+    public Predicate like(Expression<String> path, String like, CriteriaBuilder cb) {
+        return cb.like(cb.lower(path), like(like));
     }
 
     public String like(String term) {
-        return Optional.ofNullable(term).map(str -> String.format("%%%s%%", term)).orElse("%");
+        return Optional.ofNullable(term).map(str -> String.format("%%%s%%", term)).map(String::toLowerCase).orElse("%");
     }
 
     public void appendOrders(CriteriaQuery<?> query, Order... append) {
