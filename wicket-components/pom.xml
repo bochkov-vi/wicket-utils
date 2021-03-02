@@ -113,6 +113,10 @@
             <version>5.2.4.RELEASE</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.bochkov</groupId>
+            <artifactId>wicket-spring-data-jpa-model</artifactId>
+        </dependency>
 
     </dependencies>
     <build>
