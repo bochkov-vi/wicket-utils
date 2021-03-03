@@ -1,8 +1,8 @@
 package com.bochkov.wicket.jpa.crud;
 
 import com.bochkov.wicket.component.table.XLSXDataExportLink;
-import com.bochkov.wicket.data.model.nonser.CollectionModel;
 import com.bochkov.wicket.data.provider.PersistableDataProvider;
+import com.bochkov.wicket.jpa.model.CollectionModel;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import org.apache.wicket.*;

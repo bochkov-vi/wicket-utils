@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 public abstract class PersistableModel<T extends Persistable<ID>, ID extends Serializable> extends NonSerializableModel<T, ID> {
 
 
-    public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(SerializableFunction<ID, Optional<T>> entityLoader, SerializableSupplier<T> ifNullGet) {
+    public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(ID id, SerializableFunction<ID, Optional<T>> entityLoader, SerializableSupplier<T> ifNullGet) {
         PersistableModel<T, ID> model = new PersistableModel<T, ID>() {
             @Override
             public Optional<T> unpack(ID id) {
@@ -24,12 +24,13 @@ public abstract class PersistableModel<T extends Persistable<ID>, ID extends Ser
                 return Optional.ofNullable(ifNullGet).map(Supplier::get).orElse(null);
             }
         };
+        model.setKey(id);
         return model;
     }
 
 
     public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(SerializableFunction<ID, Optional<T>> entityLoader) {
-        return of(entityLoader, (SerializableSupplier<T>) null);
+        return of((ID) null, entityLoader, (SerializableSupplier<T>) null);
     }
 
 
@@ -39,6 +40,13 @@ public abstract class PersistableModel<T extends Persistable<ID>, ID extends Ser
         return model;
     }
 
+    public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(SerializableFunction<ID, Optional<T>> entityLoader, SerializableSupplier<T> ifNullGet) {
+        return of((ID) null, entityLoader, ifNullGet);
+    }
+
+    public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(T entity, SerializableFunction<ID, Optional<T>> entityLoader, SerializableSupplier<T> ifNullGet) {
+        return of(Optional.ofNullable(entity).map(Persistable::getId).orElse(null), entityLoader, ifNullGet);
+    }
 
     public static <T extends Persistable<ID>, ID extends Serializable> PersistableModel<T, ID> of(T entity, SerializableFunction<ID, Optional<T>> entityLoader) {
         PersistableModel<T, ID> model = of(entityLoader);
