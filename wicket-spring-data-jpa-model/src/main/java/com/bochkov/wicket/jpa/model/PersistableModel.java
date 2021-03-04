@@ -87,7 +87,7 @@ public abstract class PersistableModel<T extends Persistable<ID>, ID extends Ser
                 return Optional.ofNullable(ifNullGet).map(Supplier::get).orElse(null);
             }
         };
-        result.setObject(_this.getObject());
+        result.setKey(_this.key);
         return result;
     }
 }
