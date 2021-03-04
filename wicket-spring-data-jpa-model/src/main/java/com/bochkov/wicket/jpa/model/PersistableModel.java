@@ -67,4 +67,27 @@ public abstract class PersistableModel<T extends Persistable<ID>, ID extends Ser
     public T ifNullGet() {
         return null;
     }
+
+    public PersistableModel<T, ID> copyWithIfNullGet(SerializableSupplier<T> ifNullGet) {
+        PersistableModel<T, ID> _this = this;
+        PersistableModel<T, ID> result = new PersistableModel<T, ID>() {
+            @Override
+            public Optional<T> unpack(ID id) {
+                return _this.unpack(id);
+            }
+
+            @Override
+            public void onDetach() {
+                super.onDetach();
+                _this.detach();
+            }
+
+            @Override
+            public T ifNullGet() {
+                return Optional.ofNullable(ifNullGet).map(Supplier::get).orElse(null);
+            }
+        };
+        result.setObject(_this.getObject());
+        return result;
+    }
 }
