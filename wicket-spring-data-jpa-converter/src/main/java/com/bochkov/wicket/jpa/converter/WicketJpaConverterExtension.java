@@ -36,6 +36,9 @@ public class WicketJpaConverterExtension implements WicketApplicationInitConfigu
                 idConverter = new CompositeConverter(idClass);
                 converterLocator.set(idClass, idConverter);
             }
+            if(idConverter==null){
+                idConverter = converterLocator.getConverter(idClass);
+            }
             IConverter entityConverter = converterLocator.get(entityClass);
             if (entityConverter == null) {
                 entityConverter = new WicketJpaConverter(entityClass, idConverter, jpaRepository);
