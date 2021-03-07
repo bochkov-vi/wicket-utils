@@ -1,11 +1,17 @@
 package com.bochkov.wicket.jpa.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import java.io.Serializable;
 import java.util.Optional;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 public abstract class NonSerializableModel<T, ID> extends LoadableDetachableModel<T> {
 
     protected ID key;
