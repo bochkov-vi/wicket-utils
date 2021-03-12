@@ -6,6 +6,7 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.HTML5Attributes;
+import org.apache.wicket.markup.html.form.AbstractChoice;
 import org.apache.wicket.markup.html.form.AbstractTextComponent;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -15,6 +16,7 @@ import org.apache.wicket.util.visit.IVisitor;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidatorAdapter;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.wicketstuff.select2.AbstractSelect2Choice;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -47,6 +49,28 @@ public class Html5AttributesBehavior extends HTML5Attributes {
             onInput((AbstractTextComponent<?>) component, tag);
         } else if (component instanceof Button) {
             onButton((Button) component, tag);
+        } else if (component instanceof AbstractChoice) {
+            onSelect((FormComponent<?>) component, tag);
+        } else if (component instanceof AbstractSelect2Choice) {
+            onSelect((FormComponent<?>) component, tag);
+        }
+    }
+
+    protected void onSelect(FormComponent<?> input, ComponentTag tag) {
+        if (input.isRequired()) {
+            tag.put("required", "required");
+        }
+        if (Strings.isNullOrEmpty(tag.getAttribute("placeholder"))) {
+            String label = Optional.ofNullable(input.getLabel()).map(IModel::getObject).orElse(null);
+            if (!Strings.isNullOrEmpty(label)) {
+                tag.put("placeholder", label);
+            }
+            if (Strings.isNullOrEmpty(label)) {
+                label = input.getDefaultLabel();
+                if (!Strings.isNullOrEmpty(label)) {
+                    tag.put("placeholder", label);
+                }
+            }
         }
     }
 
